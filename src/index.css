@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
+
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@layer base {
+  :root {
+    --safe-area-top: 32px;
+    --safe-area-bottom: 24px;
+  }
+  body {
+    @apply bg-health-bg dark:bg-slate-950 text-health-text dark:text-slate-200 font-sans antialiased transition-colors;
+  }
+  #root {
+    width: 100%;
+    min-height: 100vh;
+    position: relative;
+  }
+  /* ── Desktop layout ── */
+  @media (min-width: 1024px) {
+    :root {
+      --safe-area-top: 0px;
+      /* Cancels the hard-coded 8rem bottom-nav spacing in pages */
+      --safe-area-bottom: -8rem;
+    }
+    /* Shift all page content right to clear the sidebar */
+    body.has-sidebar #root {
+      padding-left: 288px;
+    }
+    /* Expand narrow page-content wrappers to fill desktop width.
+       Excludes fixed overlays (modals / bottom-sheets) so they stay constrained. */
+    body.has-sidebar .max-w-md:not(.fixed):not([class*="fixed"]) {
+      max-width: 100%;
+    }
+    /* Re-constrain max-w-md inside fixed/absolute overlays */
+    body.has-sidebar .fixed .max-w-md,
+    body.has-sidebar .absolute .max-w-md {
+      max-width: 28rem;
+    }
+  }
+}
