@@ -73,7 +73,7 @@ export function BMETMachineTimeline() {
         paddingBottom: 'calc(var(--safe-area-bottom) + 8rem)'
       }}>
 
-      <div className="max-w-md mx-auto px-6 pt-8">
+      <div className="max-w-md  px-6 pt-8">
         {/* Header */}
         <header className="mb-6">
           <div className="flex items-center gap-4 mb-6">

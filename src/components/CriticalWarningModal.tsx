@@ -55,7 +55,7 @@ export function CriticalWarningModal({
 
             <div className="bg-white dark:bg-slate-900 w-full max-w-sm rounded-2xl shadow-xl pointer-events-auto overflow-hidden border-2 border-rose-100 dark:border-rose-900/50">
               <div className="p-6 text-center">
-                <div className="w-16 h-16 bg-rose-100 dark:bg-rose-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-rose-100 dark:bg-rose-900/30 rounded-full flex items-center justify-center  mb-4">
                   <AlertTriangle className="w-8 h-8 text-rose-600 dark:text-rose-500" />
                 </div>
 

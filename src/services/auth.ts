@@ -11,3 +11,17 @@ export const logout = () => {
   // Optionally, redirect to login screen
   window.location.href = '/login';
 };
+export const sendForgotPasswordOTP = async (email: string) => {
+  const response = await api.post('/api/user/forgot-password/send-otp', { email });
+  return response.data;
+};
+
+export const verifyForgotPasswordOTP = async (email: string, otp: string) => {
+  const response = await api.post('/api/user/forgot-password/verify-otp', { email, otp });
+  return response.data;
+};
+
+export const resetForgotPassword = async (data: any) => {
+  const response = await api.post('/api/user/forgot-password/reset-password', data);
+  return response.data;
+};

@@ -30,3 +30,26 @@ export const resolveIssue = async (machineId: number, creatorId: number, mainten
   });
   return response.data;
 }
+
+
+export const getIssues = async (userId: number) => {
+
+  const response = await api.get("/api/issues", {
+    params: { user_id: userId }
+  });
+
+  return response.data.data;
+
+};
+
+export const updateIssue = async (id: number, data: any, creatorId: number) => {
+  const response = await api.put(`/api/issues/${id}`, data, {
+    params: { creator_id: creatorId }
+  });
+  return response.data;
+};
+
+export const createIssue = async (data: any) => {
+  const response = await api.post('/api/issues', data);
+  return response.data;
+};

@@ -28,7 +28,7 @@ export function AboutApplicationScreen() {
 
   return (
     <div className="min-h-screen bg-health-bg dark:bg-slate-950 pb-32 transition-colors">
-      <div className="max-w-md mx-auto px-6 pt-8">
+      <div className="max-w-md  px-6 pt-8">
         <header className="flex items-center gap-4 mb-8">
           <button
             onClick={() => navigate(-1)}
@@ -52,7 +52,7 @@ export function AboutApplicationScreen() {
           }}
           className="bg-gradient-to-br from-health-primary to-teal-600 rounded-3xl p-8 text-white text-center mb-8 shadow-lg">
 
-          <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center  mb-4">
             <Shield className="w-8 h-8" />
           </div>
           <h2 className="text-2xl font-bold mb-2">OT Safety Checklist</h2>

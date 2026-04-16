@@ -1,156 +1,287 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { Lock, Mail, User, Briefcase, ArrowRight, Activity } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Building2, User, Mail, Key, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { UserRole } from '../types';
+import toast from 'react-hot-toast';
+import api from '../services/api';
+import "./LoginScreen.css"; // Reuse login styles
+
 export function RegisterScreen() {
   const navigate = useNavigate();
-  const [role, setRole] = useState<UserRole>('technician');
   const [loading, setLoading] = useState(false);
-  const handleRegister = (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setTimeout(() => {
-      navigate(
-        role === 'technician' ? '/technician/dashboard' : '/bmet/dashboard'
-      );
-    }, 1500);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const [hospitalName, setHospitalName] = useState('');
+  const [adminName, setAdminName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [errors, setErrors] = useState<any>({});
+
+
+
+  const validateForm = () => {
+    let newErrors: any = {};
+
+    // Hospital Name validation (required)
+    if (!hospitalName.trim()) {
+      newErrors.hospitalName = "Hospital name is required";
+    }
+
+    // HM Name validation: Only alphabets and spaces
+    if (!/^[A-Za-z ]+$/.test(adminName)) {
+      newErrors.adminName = "Name should contain only letters";
+    }
+
+    // Email validation: Only Gmail addresses
+    if (!/^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(email)) {
+      newErrors.email = "Only Gmail addresses are allowed";
+    }
+
+    // Password validation: 8+ chars, uppercase, lowercase, number, special char
+    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/.test(password)) {
+      newErrors.password = "Password must be 8+ chars with uppercase, lowercase, number, and special character";
+    }
+
+    // Confirm Password validation
+    if (password !== confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!validateForm()) {
+      toast.error("Please fix the errors in the form");
+      return;
+    }
+
+    console.log("Typed Email:", email);
+
+    const payload = {
+      hospital_name: hospitalName.trim(),
+      hm_name: adminName.trim(),
+      hm_email: email.trim(),
+      password: password
+    };
+
+    console.log("Final Payload:", payload);
+
+    setLoading(true);
+    try {
+      const response = await api.post('/api/register', payload);
+
+      if (response.data.status) {
+        toast.success(response.data.message || "Registration Successful!");
+        navigate('/'); // Navigate back to sign in page
+      } else {
+        toast.error(response.data.message || "Registration failed");
+      }
+    } catch (error: any) {
+      console.error("Registration error:", error);
+      const msg = error.response?.data?.message || "An error occurred during registration";
+      toast.error(msg);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const passwordRequirements = [
+    { label: "At least one uppercase letter", met: /[A-Z]/.test(password) },
+    { label: "At least one lowercase letter", met: /[a-z]/.test(password) },
+    { label: "At least one number", met: /[0-9]/.test(password) },
+    { label: "At least 8 characters", met: password.length >= 8 }
+  ];
+
   return (
-    <div
-      className="min-h-screen bg-health-bg dark:bg-slate-950 flex flex-col justify-center p-6 transition-colors"
-      style={{
-        paddingTop: 'var(--safe-area-top)',
-        paddingBottom: 'var(--safe-area-bottom)'
-      }}>
+    <div className="login-wrapper">
+      {/* LEFT PANEL (FIXED) */}
+      <div className="login-left">
+        <div style={{ position: 'sticky', top: '50%', transform: 'translateY(-50%)' }}>
+          <h1>Anaesthesia Management System</h1>
+          <p>Smart OT monitoring & checklist platform</p>
+        </div>
+      </div>
 
-      <div className="max-w-md mx-auto w-full">
-        <motion.div
-          initial={{
-            y: -20,
-            opacity: 0
-          }}
-          animate={{
-            y: 0,
-            opacity: 1
-          }}
-          className="mb-8">
+      {/* RIGHT PANEL (SCROLLABLE) */}
+      <div className="login-right no-scrollbar" style={{ overflowY: 'auto', display: 'block', height: '100vh', padding: '60px 0' }}>
+        <div className="login-box" style={{
+          height: 'auto',
+          width: '480px',
+          padding: '45px 50px',
+          margin: '0 auto', // Centering horizontally
+          minHeight: 'min-content' // Ensuring regular flow
+        }}>
+          <motion.div
+            initial={{ y: -10, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            style={{ marginBottom: '35px' }}
+          >
+            <h2 style={{ fontSize: '32px', margin: '0 0 8px 0' }}>Create Account</h2>
+            <p className="subtitle" style={{ margin: 0 }}>Register your hospital to get started</p>
+          </motion.div>
 
-          <h1 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mb-2">
-            Create Account
-          </h1>
-          <p className="text-slate-500 dark:text-slate-400">
-            Join the safety checklist system
-          </p>
-        </motion.div>
-
-        <motion.form
-          initial={{
-            y: 20,
-            opacity: 0
-          }}
-          animate={{
-            y: 0,
-            opacity: 1
-          }}
-          transition={{
-            delay: 0.1
-          }}
-          onSubmit={handleRegister}
-          className="space-y-5">
-
-          <div className="space-y-4">
-            <div className="relative">
-              <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+          <form onSubmit={handleRegister} className="space-y-1">
+            {/* Hospital Name */}
+            <div className="relative group" style={{ marginBottom: '15px' }}>
+              <div className="absolute left-0 h-[56px] w-12 flex items-center justify-center text-slate-400 group-focus-within:text-[#14b8a6] transition-colors pointer-events-none">
+                <Building2 size={18} />
+              </div>
               <input
                 type="text"
-                placeholder="Full Name"
-                className="w-full pl-12 pr-4 py-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 focus:border-health-primary focus:ring-2 focus:ring-health-primary/20 outline-none transition-all text-slate-800 dark:text-slate-100 placeholder:text-slate-400"
-                required />
-
+                name="hospitalName"
+                placeholder="Hospital Name"
+                value={hospitalName}
+                onChange={(e) => {
+                  setHospitalName(e.target.value);
+                  setErrors({ ...errors, hospitalName: undefined });
+                }}
+                required
+                className="login-input"
+                style={{ paddingLeft: '56px', marginBottom: 0, height: '56px', borderColor: errors.hospitalName ? '#ef4444' : undefined }}
+              />
+              {errors.hospitalName && <p className="text-red-500 text-xs mt-1 ml-1">{errors.hospitalName}</p>}
             </div>
-            <div className="relative">
-              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+
+            {/* Admin Full Name */}
+            <div className="relative group" style={{ marginBottom: '15px' }}>
+              <div className="absolute left-0 h-[56px] w-12 flex items-center justify-center text-slate-400 group-focus-within:text-[#14b8a6] transition-colors pointer-events-none">
+                <User size={18} />
+              </div>
+              <input
+                type="text"
+                name="adminName"
+                placeholder="Admin Full Name"
+                value={adminName}
+                onChange={(e) => {
+                  setAdminName(e.target.value);
+                  setErrors({ ...errors, adminName: undefined });
+                }}
+                required
+                className="login-input"
+                style={{ paddingLeft: '56px', marginBottom: 0, height: '56px', borderColor: errors.adminName ? '#ef4444' : undefined }}
+              />
+              {errors.adminName && <p className="text-red-500 text-xs mt-1 ml-1">{errors.adminName}</p>}
+            </div>
+
+            {/* Email Address */}
+            <div className="relative group" style={{ marginBottom: '15px' }}>
+              <div className="absolute left-0 h-[56px] w-12 flex items-center justify-center text-slate-400 group-focus-within:text-[#14b8a6] transition-colors pointer-events-none">
+                <Mail size={18} />
+              </div>
               <input
                 type="email"
+                name="email"
                 placeholder="Email Address"
-                className="w-full pl-12 pr-4 py-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 focus:border-health-primary focus:ring-2 focus:ring-health-primary/20 outline-none transition-all text-slate-800 dark:text-slate-100 placeholder:text-slate-400"
-                required />
-
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setErrors({ ...errors, email: undefined });
+                }}
+                required
+                className="login-input"
+                style={{ paddingLeft: '56px', marginBottom: 0, height: '56px', borderColor: errors.email ? '#ef4444' : undefined }}
+              />
+              {errors.email && <p className="text-red-500 text-xs mt-1 ml-1">{errors.email}</p>}
             </div>
-            <div className="relative">
-              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+
+            {/* Password */}
+            <div className="relative group" style={{ marginBottom: '15px' }}>
+              <div className="absolute left-0 h-[56px] w-12 flex items-center justify-center text-slate-400 group-focus-within:text-[#14b8a6] transition-colors pointer-events-none">
+                <Key size={18} />
+              </div>
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
+                name="password"
                 placeholder="Password"
-                className="w-full pl-12 pr-4 py-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 focus:border-health-primary focus:ring-2 focus:ring-health-primary/20 outline-none transition-all text-slate-800 dark:text-slate-100 placeholder:text-slate-400"
-                required />
-
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setErrors({ ...errors, password: undefined });
+                }}
+                required
+                className="login-input"
+                style={{ paddingLeft: '56px', paddingRight: '48px', marginBottom: 0, height: '56px', borderColor: errors.password ? '#ef4444' : undefined }}
+              />
+              {errors.password && <p className="text-red-500 text-xs mt-1 ml-1">{errors.password}</p>}
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#14b8a6]"
+                style={{ zIndex: 10 }}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1">
-                Select Role
-              </label>
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  type="button"
-                  onClick={() => setRole('technician')}
-                  className={`p-3 rounded-xl border-2 transition-all flex flex-col items-center gap-2 ${role === 'technician' ? 'border-health-blue bg-blue-50 dark:bg-blue-950/30 text-health-blue dark:text-blue-400' : 'border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-400 hover:border-slate-200 dark:hover:border-slate-600'}`}>
+            {/* Confirm Password */}
+            <div className="relative group" style={{ marginBottom: '15px' }}>
+              <div className="absolute left-0 h-[56px] w-12 flex items-center justify-center text-slate-400 group-focus-within:text-[#14b8a6] transition-colors pointer-events-none">
+                <Key size={18} />
+              </div>
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                name="confirmPassword"
+                placeholder="Confirm Password"
+                value={confirmPassword}
+                onChange={(e) => {
+                  setConfirmPassword(e.target.value);
+                  setErrors({ ...errors, confirmPassword: undefined });
+                }}
+                required
+                className="login-input"
+                style={{ paddingLeft: '56px', paddingRight: '48px', marginBottom: 0, height: '56px', borderColor: errors.confirmPassword ? '#ef4444' : undefined }}
+              />
+              {errors.confirmPassword && <p className="text-red-500 text-xs mt-1 ml-1">{errors.confirmPassword}</p>}
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#14b8a6]"
+                style={{ zIndex: 10 }}
+              >
+                {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
 
-                  <Briefcase className="w-6 h-6" />
-                  <span className="text-xs font-bold">Anaesthesia Tech</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setRole('bmet')}
-                  className={`p-3 rounded-xl border-2 transition-all flex flex-col items-center gap-2 ${role === 'bmet' ? 'border-slate-600 bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-300' : 'border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-400 hover:border-slate-200 dark:hover:border-slate-600'}`}>
-
-                  <Activity className="w-6 h-6" />
-                  <span className="text-xs font-bold">BMET Specialist</span>
-                </button>
+            {/* Password Requirements */}
+            <div style={{ background: '#f8fafc', borderRadius: '16px', padding: '20px', marginBottom: '25px' }}>
+              <p style={{ fontSize: '11px', fontWeight: 'bold', color: '#475569', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                Password Requirements
+              </p>
+              <div className="space-y-1.5">
+                {passwordRequirements.map((c, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <div className={`w-1 h-1 rounded-full ${c.met ? 'bg-teal-500' : 'bg-slate-300'}`} />
+                    <span style={{ fontSize: '10.5px', color: c.met ? '#0d9488' : '#64748b', fontWeight: c.met ? '600' : '500' }}>
+                      {c.label}
+                    </span>
+                  </div>
+                ))}
               </div>
             </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={loading || !hospitalName || !adminName || !email || !password || !confirmPassword}
+              className="login-button"
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '18px' }}
+            >
+              {loading ? "Registering..." : <>Register <ArrowRight size={18} /></>}
+            </button>
+          </form>
+
+          <div className="register-text" style={{ marginTop: '25px' }}>
+            Already have an account? <span onClick={() => navigate("/")}>Sign In</span>
           </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-health-primary text-white font-bold py-4 rounded-xl shadow-lg shadow-health-primary/30 flex items-center justify-center gap-2 hover:bg-teal-600 transition-all active:scale-95 disabled:opacity-70 mt-4">
-
-            {loading ?
-            <span className="animate-pulse">Creating Account...</span> :
-
-            <>
-                Register <ArrowRight className="w-5 h-5" />
-              </>
-            }
-          </button>
-        </motion.form>
-
-        <motion.div
-          initial={{
-            opacity: 0
-          }}
-          animate={{
-            opacity: 1
-          }}
-          transition={{
-            delay: 0.3
-          }}
-          className="mt-8 text-center">
-
-          <p className="text-slate-500 dark:text-slate-400">
-            Already registered?{' '}
-            <Link
-              to="/login"
-              className="text-health-primary font-bold hover:text-teal-700 dark:hover:text-teal-400">
-
-              Login
-            </Link>
-          </p>
-        </motion.div>
+        </div>
       </div>
-    </div>);
-
+    </div>
+  );
 }
+

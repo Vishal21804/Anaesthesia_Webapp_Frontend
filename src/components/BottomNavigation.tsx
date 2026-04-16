@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import {
   Home,
   ClipboardCheck,
@@ -10,132 +10,134 @@ import {
   Activity,
   LayoutGrid,
   LogOut,
-  Users } from
-'lucide-react';
+  Users
+} from
+  'lucide-react';
 import { UserRole } from '../types';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 interface BottomNavigationProps {
   role: UserRole;
 }
 export function BottomNavigation({ role }: BottomNavigationProps) {
   const navigate = useNavigate();
   const location = useLocation();
+  const { otId } = useParams();
   // ── Tab definitions ──────────────────────────────────
   const techTabs = [
-  {
-    id: 'home',
-    icon: Home,
-    label: 'Home',
-    path: '/technician/dashboard'
-  },
-  {
-    id: 'checklist',
-    icon: ClipboardCheck,
-    label: 'Checklist',
-    path: '/technician/ot-selection'
-  },
-  {
-    id: 'history',
-    icon: History,
-    label: 'History',
-    path: '/technician/history'
-  },
-  {
-    id: 'profile',
-    icon: User,
-    label: 'Profile',
-    path: '/profile'
-  }];
+    {
+      id: 'home',
+      icon: Home,
+      label: 'Home',
+      path: '/technician-dashboard'
+    },
+    {
+      id: 'checklist',
+      icon: ClipboardCheck,
+      label: 'Checklist',
+      path: '/technician/ot-selection'
+    },
+    {
+      id: 'history',
+      icon: History,
+      label: 'History',
+      path: `/technician/history/${otId || 1}`
+    },
+    {
+      id: 'profile',
+      icon: User,
+      label: 'Profile',
+      path: '/technician/profile'
+    }];
 
   const bmetTabs = [
-  {
-    id: 'home',
-    icon: Home,
-    label: 'Home',
-    path: '/bmet/dashboard'
-  },
-  {
-    id: 'issues',
-    icon: ClipboardCheck,
-    label: 'Issues',
-    path: '/bmet/issues'
-  },
-  {
-    id: 'history',
-    icon: History,
-    label: 'History',
-    path: '/bmet/history'
-  },
-  {
-    id: 'profile',
-    icon: User,
-    label: 'Profile',
-    path: '/profile'
-  }];
+    {
+      id: 'home',
+      icon: Home,
+      label: 'Home',
+      path: '/bmet-dashboard'
+    },
+    {
+      id: 'issues',
+      icon: ClipboardCheck,
+      label: 'Issues',
+      path: '/bmet/issues'
+    },
+    {
+      id: 'history',
+      icon: History,
+      label: 'History',
+      path: '/bmet/history'
+    },
+    {
+      id: 'profile',
+      icon: User,
+      label: 'Profile',
+      path: '/profile'
+    }];
 
   const managementTabs = [
-  {
-    id: 'home',
-    icon: Home,
-    label: 'Home',
-    path: '/management/dashboard'
-  },
-  {
-    id: 'manage',
-    icon: LayoutGrid,
-    label: 'Manage',
-    path: '/management/management-page'
-  },
-  {
-    id: 'technician-assignment',
-    icon: Users,
-    label: 'Assignment',
-    path: '/management/technician-assignment'
-  },
-  {
-    id: 'access',
-    icon: Shield,
-    label: 'Access',
-    path: '/management/user-access'
-  },
-  {
-    id: 'reports',
-    icon: FileText,
-    label: 'Reports',
-    path: '/management/report-history'
-  },
-  {
-    id: 'profile',
-    icon: User,
-    label: 'Profile',
-    path: '/profile'
-  }];
+    {
+      id: 'home',
+      icon: Home,
+      label: 'Home',
+      path: '/hm-dashboard'
+    },
+    {
+      id: 'manage',
+      icon: LayoutGrid,
+      label: 'Manage',
+      path: '/management/ot'
+    },
+    {
+      id: 'technician-assignment',
+      icon: Users,
+      label: 'Assignment',
+      path: '/management/technician-assignment'
+    },
+    {
+      id: 'access',
+      icon: Shield,
+      label: 'Access',
+      path: '/management/user-access'
+    },
+    {
+      id: 'reports',
+      icon: FileText,
+      label: 'Reports',
+      path: '/management/report-history'
+    },
+    {
+      id: 'profile',
+      icon: User,
+      label: 'Profile',
+      path: '/management/profile'
+    }];
 
   const inchargeTabs = [
-  {
-    id: 'home',
-    icon: Home,
-    label: 'Home',
-    path: '/incharge/dashboard'
-  },
-  {
-    id: 'reviews',
-    icon: CheckSquare,
-    label: 'Reviews',
-    path: '/incharge/reviews'
-  },
-  {
-    id: 'readiness',
-    icon: Activity,
-    label: 'Readiness',
-    path: '/incharge/readiness'
-  },
-  {
-    id: 'profile',
-    icon: User,
-    label: 'Profile',
-    path: '/profile'
-  }];
+    {
+      id: 'home',
+      icon: Home,
+      label: 'Home',
+      path: '/incharge/dashboard'
+    },
+    {
+      id: 'reviews',
+      icon: CheckSquare,
+      label: 'Reviews',
+      path: '/incharge/reviews'
+    },
+    {
+      id: 'readiness',
+      icon: Activity,
+      label: 'Readiness',
+      path: '/incharge/readiness'
+    },
+    {
+      id: 'profile',
+      icon: User,
+      label: 'Profile',
+      path: '/profile'
+    }];
 
   let tabs = techTabs;
   if (role === 'bmet') tabs = bmetTabs;
@@ -168,37 +170,51 @@ export function BottomNavigation({ role }: BottomNavigationProps) {
       dot: 'bg-teal-500'
     }
   };
-  const rc = roleConfig[role] ?? roleConfig.technician;
+  const rc = roleConfig[role as keyof typeof roleConfig] ?? roleConfig.technician;
   // ── Active-tab detection ─────────────────────────────────────────
   const isTabActive = (tab: (typeof tabs)[number]) => {
     if (location.pathname === tab.path) return true;
+    if (tab.id === 'home' && location.pathname.includes('/management/hospital-settings')) return true;
     if (
-    tab.id === 'checklist' &&
-    location.pathname.includes('/technician/machine'))
-
-    return true;
+      tab.id === 'checklist' && (
+        location.pathname.includes('/technician/machines') ||
+        location.pathname.includes('/technician/checklist') ||
+        location.pathname.includes('/technician/inspect/')
+      )
+    )
+      return true;
     if (tab.id === 'issues' && location.pathname.includes('/bmet/issue'))
-    return true;
+      return true;
     if (
-    tab.id === 'manage' && (
-    location.pathname.includes('/management/ot-') ||
-    location.pathname.includes('/management/add-') ||
-    location.pathname.includes('/management/machines')))
+      tab.id === 'manage' && (
+        location.pathname.includes('/management/ot-') ||
+        location.pathname.includes('/management/add-') ||
+        location.pathname.includes('/management/machines')))
 
-    return true;
+      return true;
     if (
-    tab.id === 'access' && (
-    location.pathname.includes('/management/user-access') ||
-    location.pathname.includes('/management/users') ||
-    location.pathname.includes('/management/create-user')))
+      tab.id === 'access' && (
+        location.pathname.includes('/management/user-access') ||
+        location.pathname.includes('/management/users') ||
+        location.pathname.includes('/management/create-user')))
 
-    return true;
+      return true;
     if (
-    tab.id === 'technician-assignment' && (
-    location.pathname.includes('/management/technician-assignment') ||
-    location.pathname.includes('/management/technician-ot-assign')))
+      tab.id === 'technician-assignment' && (
+        location.pathname.includes('/management/technician-assignment') ||
+        location.pathname.includes('/management/technician-ot-assign')))
 
-    return true;
+      return true;
+    if (tab.id === 'history' && (location.pathname.includes('/bmet/inspection') || location.pathname.includes('/technician/inspection')))
+      return true;
+    if (tab.id === 'reports' && location.pathname.includes('/inspection-details'))
+      return true;
+    if (tab.id === 'profile' && (
+      location.pathname.includes('/profile') || 
+      location.pathname.includes('/technician/profile') || 
+      location.pathname.includes('/management/profile')
+    ))
+      return true;
     return false;
   };
   // ── Add/remove body class so CSS can offset #root ────────────────
@@ -209,7 +225,7 @@ export function BottomNavigation({ role }: BottomNavigationProps) {
     };
   }, []);
   return (
-    <>
+    <div className="flex">
       {/* ════════════════════════════════════════════════════════════
                          DESKTOP SIDEBAR  (hidden on mobile)
                      ════════════════════════════════════════════════════════════ */}
@@ -254,6 +270,9 @@ export function BottomNavigation({ role }: BottomNavigationProps) {
         </div>
       </aside>
 
+      {/* CONTENT OFFSET (IMPORTANT) */}
+      <div className="hidden lg:block w-72"></div>
+
       {/* ════════════════════════════════════════════════════════════
                          MOBILE BOTTOM NAV  (hidden on desktop)
                      ════════════════════════════════════════════════════════════ */}
@@ -277,7 +296,7 @@ export function BottomNavigation({ role }: BottomNavigationProps) {
         style={{
           bottom: 'calc(var(--safe-area-bottom) + 1rem)',
           boxShadow:
-          '0 8px 32px -8px rgba(0,0,0,0.1), 0 4px 16px -4px rgba(0,0,0,0.05)'
+            '0 8px 32px -8px rgba(0,0,0,0.1), 0 4px 16px -4px rgba(0,0,0,0.05)'
         }}>
 
         {tabs.map((tab) => {
@@ -294,9 +313,9 @@ export function BottomNavigation({ role }: BottomNavigationProps) {
                 strokeWidth={2} />
 
               {active &&
-              <>
+                <>
                   <span
-                  className={`text-[9px] font-bold tracking-tight mt-1.5 uppercase ${rc.accent}`}>
+                    className={`text-[9px] font-bold tracking-tight mt-1.5 uppercase ${rc.accent}`}>
 
                     {tab.label}
                   </span>
@@ -307,6 +326,6 @@ export function BottomNavigation({ role }: BottomNavigationProps) {
 
         })}
       </nav>
-    </>);
-
+    </div>
+  );
 }

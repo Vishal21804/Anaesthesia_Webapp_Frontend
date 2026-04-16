@@ -17,7 +17,7 @@ export function MaintenanceUpdate() {
   };
   return (
     <div className="min-h-screen bg-health-bg pb-32">
-      <div className="max-w-md mx-auto px-6 pt-8">
+      <div className="max-w-md  px-6 pt-8">
         <header className="flex items-center gap-4 mb-8">
           <button
             onClick={() => navigate(-1)}

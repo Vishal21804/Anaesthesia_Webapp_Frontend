@@ -1,8 +1,10 @@
 export type Role = "HM" | "AT" | "BMET" | "incharge" | "technician";
+export type UserRole = Role | 'management' | 'admin' | 'bmet';
+
 
 export interface User {
   id: number;
-  name:string;
+  name: string;
   email: string;
   role: Role;
   hospital_id: number;
@@ -15,9 +17,9 @@ export interface LoginCredentials {
 }
 
 export interface AuthResponse {
-    status: boolean;
-    user: User;
-    message?: string;
+  status: boolean;
+  user: User;
+  message?: string;
 }
 
 // Only two statuses: working and broken (not working)
@@ -45,15 +47,16 @@ export interface OT {
   machines_assigned: number;
   issues_count: number;
   status: string;
+  machine_count?: number;
 }
 
 export type IssuePriority = 'low' | 'medium' | 'high' | 'critical';
 export type IssueStatus =
-'pending' |
-'in-progress' |
-'resolved' |
-'escalated' |
-'under-maintenance';
+  'pending' |
+  'in-progress' |
+  'resolved' |
+  'escalated' |
+  'under-maintenance';
 
 export interface Issue {
   id: number;
@@ -97,20 +100,20 @@ export interface ChecklistSession {
 }
 
 export interface ChecklistHistory {
-    id: number;
-    machine_name: string;
-    machine_type: string;
-    serial_number: string;
-    status: 'working' | 'issues' | 'resolved' | 'pending';
-    date: string;
-    checked_by: string;
+  id: number;
+  machine_name: string;
+  machine_type: string;
+  serial_number: string;
+  status: 'working' | 'issues' | 'resolved' | 'pending';
+  date: string;
+  checked_by: string;
 }
 
 // Configuration Warning - OT Mismatch Reports (HM only)
 export type ConfigurationWarningReason =
-'machine_not_present' |
-'wrong_ot_assignment' |
-'duplicate_machine';
+  'machine_not_present' |
+  'wrong_ot_assignment' |
+  'duplicate_machine';
 
 export type ConfigurationWarningStatus = 'open' | 'acknowledged' | 'resolved';
 
@@ -271,12 +274,12 @@ export interface RepairRecord {
 
 // Machine Timeline Event for BMET
 export type TimelineEventType =
-'checklist_completed' |
-'issue_reported' |
-'repair_started' |
-'repair_completed' |
-'status_changed' |
-'maintenance_scheduled';
+  'checklist_completed' |
+  'issue_reported' |
+  'repair_started' |
+  'repair_completed' |
+  'status_changed' |
+  'maintenance_scheduled';
 
 export interface MachineTimelineEvent {
   id: string;

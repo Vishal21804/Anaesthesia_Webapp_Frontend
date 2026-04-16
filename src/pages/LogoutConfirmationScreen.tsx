@@ -1,19 +1,18 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LogOut, X } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useRole } from '../contexts/RoleContext';
 export function LogoutConfirmationScreen() {
   const navigate = useNavigate();
-  const { clearRole } = useRole();
   const handleLogout = () => {
-    // Clear role and session data
-    clearRole();
+    // Clear all stored authentication and session data
+    localStorage.clear();
     sessionStorage.clear();
-    navigate('/role-selection');
+
+    // Redirect to login page
+    navigate('/');
   };
   return (
-    <div className="min-h-screen bg-slate-900/50 dark:bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-6 transition-colors">
+    <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-6 z-[9999]">
       <motion.div
         initial={{
           scale: 0.9,

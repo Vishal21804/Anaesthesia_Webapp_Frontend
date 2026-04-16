@@ -49,7 +49,7 @@ export function UpdateConfirmation() {
         transition={{
           delay: 0.2
         }}
-        className="text-slate-500 mb-8 max-w-xs mx-auto">
+        className="text-slate-500 mb-8 max-w-xs ">
 
         The issue status has been successfully updated in the system.
       </motion.p>

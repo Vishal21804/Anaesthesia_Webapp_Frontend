@@ -17,16 +17,16 @@ export function HMReportsAudit() {
   }));
   return (
     <div
-      className="min-h-screen bg-health-bg dark:bg-slate-950 transition-colors overflow-y-auto"
+      className="min-h-screen bg-health-bg dark:bg-slate-950 transition-colors overflow-y-auto text-left"
       style={{
         paddingTop: 'var(--safe-area-top)',
         paddingBottom: 'calc(var(--safe-area-bottom) + 8rem)'
       }}>
 
-      <div className="max-w-md mx-auto px-6 pt-8">
+      <div className="max-w-md  px-6 pt-8">
         <header className="flex items-center gap-4 mb-8">
           <button
-            onClick={() => navigate('/management/dashboard')}
+            onClick={() => navigate('/hm-dashboard')}
             className="p-2 bg-white dark:bg-slate-900 rounded-full shadow-sm text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
 
             <ArrowLeft className="w-6 h-6" />
@@ -90,20 +90,20 @@ export function HMReportsAudit() {
           </div>
 
           {inspectionHistory.map((item, index) =>
-          <motion.div
-            key={item.id}
-            initial={{
-              y: 20,
-              opacity: 0
-            }}
-            animate={{
-              y: 0,
-              opacity: 1
-            }}
-            transition={{
-              delay: index * 0.05
-            }}
-            className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm flex items-center justify-between">
+            <motion.div
+              key={item.id}
+              initial={{
+                y: 20,
+                opacity: 0
+              }}
+              animate={{
+                y: 0,
+                opacity: 1
+              }}
+              transition={{
+                delay: index * 0.05
+              }}
+              className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm flex items-center justify-between">
 
               <div>
                 <h3 className="font-bold text-slate-800 dark:text-slate-100 text-sm">
@@ -118,7 +118,7 @@ export function HMReportsAudit() {
               </div>
 
               <span
-              className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide ${item.status === 'working' ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/30 dark:text-emerald-400' : 'bg-red-50 text-red-600 dark:bg-red-950/30 dark:text-red-400'}`}>
+                className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide ${item.status === 'working' ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/30 dark:text-emerald-400' : 'bg-red-50 text-red-600 dark:bg-red-950/30 dark:text-red-400'}`}>
 
                 {item.status}
               </span>

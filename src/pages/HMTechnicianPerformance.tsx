@@ -5,62 +5,63 @@ import {
   Trophy,
   Clock,
   AlertCircle,
-  CheckCircle2 } from
-'lucide-react';
+  CheckCircle2
+} from
+  'lucide-react';
 import { motion } from 'framer-motion';
 import { BottomNavigation } from '../components/BottomNavigation';
 export function HMTechnicianPerformance() {
   const navigate = useNavigate();
   const [period, setPeriod] = useState('week');
   const technicians = [
-  {
-    id: 't1',
-    name: 'Alex Taylor',
-    role: 'AT',
-    checklists: 45,
-    avgTime: '8m',
-    issues: 3,
-    score: 98,
-    rank: 1,
-    color: 'emerald'
-  },
-  {
-    id: 't2',
-    name: 'Sarah Smith',
-    role: 'AT',
-    checklists: 42,
-    avgTime: '12m',
-    issues: 1,
-    score: 95,
-    rank: 2,
-    color: 'blue'
-  },
-  {
-    id: 't3',
-    name: 'Mike Johnson',
-    role: 'AT',
-    checklists: 38,
-    avgTime: '9m',
-    issues: 5,
-    score: 92,
-    rank: 3,
-    color: 'purple'
-  },
-  {
-    id: 't4',
-    name: 'Maria Garcia',
-    role: 'AT',
-    checklists: 35,
-    avgTime: '15m',
-    issues: 2,
-    score: 88,
-    rank: 4,
-    color: 'slate'
-  }];
+    {
+      id: 't1',
+      name: 'Alex Taylor',
+      role: 'AT',
+      checklists: 45,
+      avgTime: '8m',
+      issues: 3,
+      score: 98,
+      rank: 1,
+      color: 'emerald'
+    },
+    {
+      id: 't2',
+      name: 'Sarah Smith',
+      role: 'AT',
+      checklists: 42,
+      avgTime: '12m',
+      issues: 1,
+      score: 95,
+      rank: 2,
+      color: 'blue'
+    },
+    {
+      id: 't3',
+      name: 'Mike Johnson',
+      role: 'AT',
+      checklists: 38,
+      avgTime: '9m',
+      issues: 5,
+      score: 92,
+      rank: 3,
+      color: 'purple'
+    },
+    {
+      id: 't4',
+      name: 'Maria Garcia',
+      role: 'AT',
+      checklists: 35,
+      avgTime: '15m',
+      issues: 2,
+      score: 88,
+      rank: 4,
+      color: 'slate'
+    }];
 
   return (
     <div
-      className="min-h-[917px] bg-slate-50 dark:bg-slate-950 transition-colors overflow-y-auto"
+      className="min-h-[917px] bg-slate-50 dark:bg-slate-950 transition-colors overflow-y-auto text-left"
       style={{
         paddingTop: 'var(--safe-area-top)',
         paddingBottom: 'calc(var(--safe-area-bottom) + 8rem)'
@@ -70,7 +71,7 @@ export function HMTechnicianPerformance() {
       <div className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-5 py-4">
         <div className="flex items-center gap-3 mb-4">
           <button
-            onClick={() => navigate('/management/dashboard')}
+            onClick={() => navigate('/hm-dashboard')}
             className="w-10 h-10 bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center text-slate-600 dark:text-slate-300">
 
             <ArrowLeft className="w-5 h-5" />
@@ -88,10 +89,10 @@ export function HMTechnicianPerformance() {
         {/* Period Selector */}
         <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
           {['Today', 'Week', 'Month'].map((p) =>
-          <button
-            key={p}
-            onClick={() => setPeriod(p.toLowerCase())}
-            className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${period === p.toLowerCase() ? 'bg-white dark:bg-slate-700 text-purple-600 dark:text-purple-400 shadow-sm' : 'text-slate-500 dark:text-slate-400'}`}>
+            <button
+              key={p}
+              onClick={() => setPeriod(p.toLowerCase())}
+              className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${period === p.toLowerCase() ? 'bg-white dark:bg-slate-700 text-purple-600 dark:text-purple-400 shadow-sm' : 'text-slate-500 dark:text-slate-400'}`}>
 
               {p}
             </button>
@@ -135,23 +136,23 @@ export function HMTechnicianPerformance() {
         </h2>
         <div className="space-y-3">
           {technicians.map((tech, index) =>
-          <motion.div
-            key={tech.id}
-            initial={{
-              x: -20,
-              opacity: 0
-            }}
-            animate={{
-              x: 0,
-              opacity: 1
-            }}
-            transition={{
-              delay: index * 0.1
-            }}
-            className="bg-white dark:bg-slate-900 rounded-xl p-4 border border-slate-200 dark:border-slate-800 flex items-center gap-4">
+            <motion.div
+              key={tech.id}
+              initial={{
+                x: -20,
+                opacity: 0
+              }}
+              animate={{
+                x: 0,
+                opacity: 1
+              }}
+              transition={{
+                delay: index * 0.1
+              }}
+              className="bg-white dark:bg-slate-900 rounded-xl p-4 border border-slate-200 dark:border-slate-800 flex items-center gap-4">
 
               <div
-              className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${index === 0 ? 'bg-yellow-100 text-yellow-700' : index === 1 ? 'bg-slate-100 text-slate-600' : index === 2 ? 'bg-orange-100 text-orange-700' : 'bg-slate-50 text-slate-400'}`}>
+                className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${index === 0 ? 'bg-yellow-100 text-yellow-700' : index === 1 ? 'bg-slate-100 text-slate-600' : index === 2 ? 'bg-orange-100 text-orange-700' : 'bg-slate-50 text-slate-400'}`}>
 
                 {tech.rank}
               </div>

@@ -5,7 +5,7 @@ export const getMachineTypes = async () => {
   return response.data;
 };
 
-export const addMachineTemplate = async (data: any, creatorId: number) => {
+export const addMachine = async (data: any, creatorId: number) => {
   const response = await api.post('/api/machine/add', data, {
     params: { creator_id: creatorId }
   });
@@ -53,7 +53,15 @@ export const getUserAssignedOTs = async (userId: number, creatorId: number) => {
 };
 
 export const inspectMachine = async (data: { machine_id: number, user_id: number, status: string, remarks?: string, priority?: string }) => {
-  const response = await api.post('/api/machine/inspect', data);
+  const response = await api.post('/api/machine/inspect', null, {
+    params: {
+      machine_id: data.machine_id,
+      creator_id: data.user_id,
+      status: data.status,
+      remarks: data.remarks || "",
+      priority: data.priority || null
+    }
+  });
   return response.data;
 };
 
@@ -92,9 +100,22 @@ export const updateMachineTemplate = async (machineId: number, data: any, creato
   return response.data;
 };
 
-export const getInspectionDetails = async (machineId: number, creatorId: number) => {
-  const response = await api.get(`/api/inspection/details/${machineId}`, {
+export const getInspectionDetails = async (inspectionId: number, creatorId: number) => {
+  const response = await api.get(`/api/inspection/details/${inspectionId}`, {
     params: { creator_id: creatorId }
   });
+  return response.data;
+}; export const getMachineHistoryById = async (id: number, creatorId: number) => {
+  const response = await api.get(`/api/history/machines/${id}`, {
+    params: { creator_id: creatorId }
+  });
+  return response.data;
+};
+
+export const getReportHistory = async (creatorId: number) => {
+  const response = await api.get('/api/reports/history', {
+    params: { creator_id: creatorId }
+  });
+
   return response.data;
 };

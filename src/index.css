@@ -7,19 +7,32 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 @layer base {
   :root {
     --safe-area-top: 32px;
     --safe-area-bottom: 24px;
   }
+
   body {
     @apply bg-health-bg dark:bg-slate-950 text-health-text dark:text-slate-200 font-sans antialiased transition-colors;
   }
+
+  @media (min-width: 1024px) {
+    body.has-sidebar {
+      padding-left: 288px;
+    }
+  }
+
   #root {
-    width: 100%;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
     min-height: 100vh;
     position: relative;
   }
+
   /* ── Desktop layout ── */
   @media (min-width: 1024px) {
     :root {
@@ -27,15 +40,12 @@
       /* Cancels the hard-coded 8rem bottom-nav spacing in pages */
       --safe-area-bottom: -8rem;
     }
-    /* Shift all page content right to clear the sidebar */
-    body.has-sidebar #root {
-      padding-left: 288px;
-    }
-    /* Expand narrow page-content wrappers to fill desktop width.
-       Excludes fixed overlays (modals / bottom-sheets) so they stay constrained. */
+
+    /* Expand narrow page-content wrappers to fill desktop width. */
     body.has-sidebar .max-w-md:not(.fixed):not([class*="fixed"]) {
       max-width: 100%;
     }
+
     /* Re-constrain max-w-md inside fixed/absolute overlays */
     body.has-sidebar .fixed .max-w-md,
     body.has-sidebar .absolute .max-w-md {

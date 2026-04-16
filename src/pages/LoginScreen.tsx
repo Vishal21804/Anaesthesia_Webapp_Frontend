@@ -1,12 +1,14 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
+import { Eye, EyeOff, Lock, Mail } from "lucide-react"
 import "./LoginScreen.css"
 
 export default function LoginScreen() {
 
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState("")
 
   const navigate = useNavigate()
@@ -16,7 +18,7 @@ export default function LoginScreen() {
     try {
 
       const res = await axios.post(
-        "http://localhost:8000/login",
+        "http://127.0.0.1:8000/login",
         {
           email,
           password
@@ -29,8 +31,14 @@ export default function LoginScreen() {
       }
 
       const user = res.data.user
-
       localStorage.setItem("user", JSON.stringify(user))
+      localStorage.setItem("user_id", user.id)
+
+      // ✅ FORCE PASSWORD CHANGE CHECK (ONLY FOR AT & BMET)
+      if (user.force_password_change && (user.role === "AT" || user.role === "BMET")) {
+        navigate("/first-login-onboarding")
+        return
+      }
 
       if (user.role === "HM") {
         navigate("/hm-dashboard")
@@ -72,22 +80,42 @@ export default function LoginScreen() {
 
           {error && <p className="error-text">{error}</p>}
 
-          <input
-            className="login-input"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+          <div className="relative group" style={{ marginBottom: '22px' }}>
+            <div className="absolute left-0 h-[56px] w-12 flex items-center justify-center text-slate-400 group-focus-within:text-[#14b8a6] transition-colors pointer-events-none">
+              <Mail size={18} />
+            </div>
+            <input
+              className="login-input"
+              style={{ paddingLeft: '56px', marginBottom: 0 }}
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
 
-          <input
-            className="login-input"
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <div className="relative group" style={{ marginBottom: '22px' }}>
+            <div className="absolute left-0 h-[56px] w-12 flex items-center justify-center text-slate-400 group-focus-within:text-[#14b8a6] transition-colors pointer-events-none">
+              <Lock size={18} />
+            </div>
+            <input
+              className="login-input"
+              style={{ paddingLeft: '56px', paddingRight: '48px', marginBottom: 0 }}
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#14b8a6] transition-colors"
+              style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </div>
 
-          <div className="forgot-password">
+          <div className="forgot-password" onClick={() => navigate("/forgot-password")}>
             Forgot Password?
           </div>
 
@@ -99,7 +127,7 @@ export default function LoginScreen() {
           </button>
 
           <div className="register-text">
-            Not registered? <span>Register</span>
+            Not registered? <span onClick={() => navigate("/register")} style={{ cursor: 'pointer' }}>Register</span>
           </div>
 
         </div>

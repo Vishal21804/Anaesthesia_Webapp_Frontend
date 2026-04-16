@@ -8,8 +8,9 @@ import {
   Database,
   ChevronDown,
   ChevronUp,
-  Save } from
-'lucide-react';
+  Save
+} from
+  'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BottomNavigation } from '../components/BottomNavigation';
 export function HMSystemSettings() {
@@ -28,20 +29,20 @@ export function HMSystemSettings() {
     }, 1000);
   };
   const sections = [
-  {
-    id: 'general',
-    title: 'General Settings',
-    icon: Settings,
-    content:
-    <div className="space-y-4">
+    {
+      id: 'general',
+      title: 'General Settings',
+      icon: Settings,
+      content:
+        <div className="space-y-4">
           <div>
             <label className="block text-xs font-bold text-slate-500 mb-1">
               Hospital Name
             </label>
             <input
-          type="text"
-          defaultValue="City General Hospital"
-          className="w-full p-3 bg-slate-50 dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 text-sm" />
+              type="text"
+              defaultValue="City General Hospital"
+              className="w-full p-3 bg-slate-50 dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 text-sm" />
 
           </div>
           <div>
@@ -56,13 +57,13 @@ export function HMSystemSettings() {
           </div>
         </div>
 
-  },
-  {
-    id: 'notifications',
-    title: 'Notification Settings',
-    icon: Bell,
-    content:
-    <div className="space-y-3">
+    },
+    {
+      id: 'notifications',
+      title: 'Notification Settings',
+      icon: Bell,
+      content:
+        <div className="space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
               Email Alerts
@@ -89,21 +90,21 @@ export function HMSystemSettings() {
           </div>
         </div>
 
-  },
-  {
-    id: 'compliance',
-    title: 'Compliance Settings',
-    icon: Shield,
-    content:
-    <div className="space-y-4">
+    },
+    {
+      id: 'compliance',
+      title: 'Compliance Settings',
+      icon: Shield,
+      content:
+        <div className="space-y-4">
           <div>
             <label className="block text-xs font-bold text-slate-500 mb-1">
               Overdue Threshold (Hours)
             </label>
             <input
-          type="number"
-          defaultValue="24"
-          className="w-full p-3 bg-slate-50 dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 text-sm" />
+              type="number"
+              defaultValue="24"
+              className="w-full p-3 bg-slate-50 dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 text-sm" />
 
           </div>
           <div className="flex items-center justify-between">
@@ -116,13 +117,13 @@ export function HMSystemSettings() {
           </div>
         </div>
 
-  },
-  {
-    id: 'data',
-    title: 'Data Management',
-    icon: Database,
-    content:
-    <div className="space-y-3">
+    },
+    {
+      id: 'data',
+      title: 'Data Management',
+      icon: Database,
+      content:
+        <div className="space-y-3">
           <button className="w-full py-2 border border-slate-300 dark:border-slate-700 rounded-lg text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800">
             Export Audit Logs (CSV)
           </button>
@@ -131,20 +132,20 @@ export function HMSystemSettings() {
           </button>
         </div>
 
-  }];
+    }];
 
   return (
     <div
-      className="min-h-screen bg-health-bg dark:bg-slate-950 transition-colors overflow-y-auto"
+      className="min-h-screen bg-health-bg dark:bg-slate-950 transition-colors overflow-y-auto text-left"
       style={{
         paddingTop: 'var(--safe-area-top)',
         paddingBottom: 'calc(var(--safe-area-bottom) + 8rem)'
       }}>
 
-      <div className="max-w-md mx-auto px-6 pt-8">
+      <div className="max-w-md  px-6 pt-8">
         <header className="flex items-center gap-4 mb-8">
           <button
-            onClick={() => navigate('/management/dashboard')}
+            onClick={() => navigate('/hm-dashboard')}
             className="p-2 bg-white dark:bg-slate-900 rounded-full shadow-sm text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
 
             <ArrowLeft className="w-6 h-6" />
@@ -181,27 +182,27 @@ export function HMSystemSettings() {
                     </span>
                   </div>
                   {isExpanded ?
-                  <ChevronUp className="w-5 h-5 text-slate-400" /> :
+                    <ChevronUp className="w-5 h-5 text-slate-400" /> :
 
-                  <ChevronDown className="w-5 h-5 text-slate-400" />
+                    <ChevronDown className="w-5 h-5 text-slate-400" />
                   }
                 </button>
                 <AnimatePresence>
                   {isExpanded &&
-                  <motion.div
-                    initial={{
-                      height: 0,
-                      opacity: 0
-                    }}
-                    animate={{
-                      height: 'auto',
-                      opacity: 1
-                    }}
-                    exit={{
-                      height: 0,
-                      opacity: 0
-                    }}
-                    className="overflow-hidden">
+                    <motion.div
+                      initial={{
+                        height: 0,
+                        opacity: 0
+                      }}
+                      animate={{
+                        height: 'auto',
+                        opacity: 1
+                      }}
+                      exit={{
+                        height: 0,
+                        opacity: 0
+                      }}
+                      className="overflow-hidden">
 
                       <div className="p-4 pt-0 border-t border-slate-50 dark:border-slate-800">
                         <div className="mt-4">{section.content}</div>
@@ -220,9 +221,9 @@ export function HMSystemSettings() {
           className="w-full bg-purple-600 text-white font-bold py-4 rounded-xl shadow-lg shadow-purple-600/30 flex items-center justify-center gap-2 hover:bg-purple-700 transition-all active:scale-95 disabled:opacity-70">
 
           {loading ?
-          <span className="animate-pulse">Saving Settings...</span> :
+            <span className="animate-pulse">Saving Settings...</span> :
 
-          <>
+            <>
               Save All Changes <Save className="w-5 h-5" />
             </>
           }

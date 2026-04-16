@@ -32,7 +32,7 @@ export function ATSubmissionReview() {
         paddingBottom: 'calc(var(--safe-area-bottom) + 2rem)'
       }}>
 
-      <div className="max-w-md mx-auto px-6 pt-8 pb-8">
+      <div className="max-w-md  px-6 pt-8 pb-8">
         {/* Header */}
         <header className="flex items-center gap-4 mb-8">
           <button
@@ -113,7 +113,7 @@ export function ATSubmissionReview() {
             Reported Issues
           </h3>
           <div className="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-4 border border-slate-100 dark:border-slate-800 text-center">
-            <CheckCircle2 className="w-8 h-8 text-emerald-400 mx-auto mb-2 opacity-50" />
+            <CheckCircle2 className="w-8 h-8 text-emerald-400  mb-2 opacity-50" />
             <p className="text-sm text-slate-500 dark:text-slate-400">
               No issues reported during this check.
             </p>

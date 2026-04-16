@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   ArrowLeft,
@@ -10,12 +10,23 @@ import {
   AlertTriangle,
   Edit2,
   Check,
-  Pencil } from
-'lucide-react';
+  Pencil
+} from
+  'lucide-react';
 import { motion } from 'framer-motion';
 import { useUserManagement } from '../contexts/UserManagementContext';
 import { BottomNavigation } from '../components/BottomNavigation';
 import { UserRole } from '../types';
+import api from '../services/api';
+
+const API_BASE = "http://127.0.0.1:8000";
+
+const getProfileImage = (path: string | null | undefined) => {
+  if (!path) return null;
+  const cleanPath = path.startsWith("/") ? path.substring(1) : path;
+  return `${API_BASE}/${cleanPath}`;
+};
+
 export function HMUserAccessDetail() {
   const navigate = useNavigate();
   const { userId } = useParams();
@@ -27,25 +38,54 @@ export function HMUserAccessDetail() {
   const [editName, setEditName] = useState(user?.name || '');
   const [editEmail, setEditEmail] = useState(user?.email || '');
   const [editRole, setEditRole] = useState(user?.role || 'technician');
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await api.get(`/api/user/${userId}`);
+        const data = res.data.data;
+        if (data) {
+          setEditName(data.name || "");
+          setEditEmail(data.email || "");
+          if (data.role) setEditRole(data.role);
+        }
+      } catch (err) {
+        console.error("Failed to load user", err);
+      }
+    };
+    if (userId) fetchUser();
+  }, [userId]);
+
   if (!user) {
     return (
-      <div className="min-h-screen bg-health-bg dark:bg-slate-950 flex items-center justify-center">
+      <div className="min-h-screen bg-health-bg dark:bg-slate-950 flex items-center justify-center text-left">
         <p className="text-slate-500">User not found</p>
       </div>);
 
   }
-  const handleSave = () => {
+  const handleSave = async () => {
     setLoading(true);
-    setTimeout(() => {
+    try {
+      await api.put(`/api/user/update`, {
+        user_id: Number(userId),
+        name: editName,
+        email: editEmail
+      });
       updateUser(user.id, {
+        name: editName,
+        email: editEmail,
         role: editRole as UserRole
       });
-      setLoading(false);
       setShowSuccess(true);
       setTimeout(() => {
         navigate('/management/user-access');
       }, 1500);
-    }, 1500);
+    } catch (err: any) {
+      console.error(err);
+      alert(err.response?.data?.detail || "Update failed");
+    } finally {
+      setLoading(false);
+    }
   };
   const getRoleBadge = (role: string) => {
     switch (role) {
@@ -103,7 +143,7 @@ export function HMUserAccessDetail() {
           }}
           className="bg-white dark:bg-slate-900 rounded-2xl p-8 shadow-lg text-center max-w-sm w-full border border-slate-100 dark:border-slate-800">
 
-          <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-950/30 rounded-full flex items-center justify-center mx-auto mb-4 text-emerald-600 dark:text-emerald-400">
+          <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-950/30 rounded-full flex items-center justify-center  mb-4 text-emerald-600 dark:text-emerald-400">
             <CheckCircle2 className="w-8 h-8" />
           </div>
           <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">
@@ -124,7 +164,7 @@ export function HMUserAccessDetail() {
         paddingBottom: 'calc(var(--safe-area-bottom) + 8rem)'
       }}>
 
-      <div className="max-w-md mx-auto px-6 pt-8">
+      <div className="max-w-md  px-6 pt-8">
         <header className="flex items-center gap-4 mb-6">
           <button
             onClick={() => navigate('/management/user-access')}
@@ -145,11 +185,18 @@ export function HMUserAccessDetail() {
         {/* User Info Card */}
         <div className="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm mb-2">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold shadow-lg shadow-purple-500/30 text-xl">
-              {user.name.
-              split(' ').
-              map((n) => n[0]).
-              join('')}
+            <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold shadow-lg shadow-purple-500/30 text-xl overflow-hidden">
+              {getProfileImage(user.profile_pic) ? (
+                <img
+                  src={getProfileImage(user.profile_pic)!}
+                  alt={user.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full bg-purple-200 flex items-center justify-center text-purple-700">
+                  {user.name.charAt(0)}
+                </div>
+              )}
             </div>
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
@@ -187,8 +234,8 @@ export function HMUserAccessDetail() {
                 </p>
                 <p className="text-xs text-slate-500 dark:text-slate-400">
                   {user.enabled ?
-                  'User can log in and access system' :
-                  'User access is currently blocked'}
+                    'User can log in and access system' :
+                    'User access is currently blocked'}
                 </p>
               </div>
               <button
@@ -256,7 +303,7 @@ export function HMUserAccessDetail() {
                 </span>
                 <button
                   onClick={() =>
-                  navigate(`/management/user-ot-assignment/${user.id}`)
+                    navigate(`/management/user-ot-assignment/${user.id}`)
                   }
                   className="text-xs font-bold text-purple-600 dark:text-purple-400 flex items-center gap-1">
 
@@ -265,18 +312,18 @@ export function HMUserAccessDetail() {
               </div>
 
               {user.assignedOTs.length > 0 ?
-              <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2">
                   {user.assignedOTs.map((ot) =>
-                <span
-                  key={ot}
-                  className="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-lg text-xs font-medium border border-slate-200 dark:border-slate-700">
+                    <span
+                      key={ot}
+                      className="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-lg text-xs font-medium border border-slate-200 dark:border-slate-700">
 
                       {ot.toUpperCase()}
                     </span>
-                )}
+                  )}
                 </div> :
 
-              <p className="text-xs text-slate-400 italic">
+                <p className="text-xs text-slate-400 italic">
                   No OTs assigned yet.
                 </p>
               }
@@ -290,9 +337,9 @@ export function HMUserAccessDetail() {
             className="w-full bg-purple-600 text-white font-bold py-4 rounded-xl shadow-lg shadow-purple-600/30 flex items-center justify-center gap-2 hover:bg-purple-700 transition-all active:scale-95 disabled:opacity-70 mb-6">
 
             {loading ?
-            <span className="animate-pulse">Saving Changes...</span> :
+              <span className="animate-pulse">Saving Changes...</span> :
 
-            <>
+              <>
                 Save Changes <Save className="w-5 h-5" />
               </>
             }

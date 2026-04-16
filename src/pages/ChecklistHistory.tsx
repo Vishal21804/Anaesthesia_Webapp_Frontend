@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   ArrowLeft,
@@ -6,109 +6,76 @@ import {
   CheckCircle,
   AlertCircle,
   ChevronRight,
-  Loader,
-  CheckCircle2,
-  Clock
+  Loader
 } from 'lucide-react';
 import { BottomNavigation } from '../components/BottomNavigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getChecklistMachines } from '../services/checklist';
-import { ChecklistHistory as ChecklistHistoryType, User } from '../types';
-
-type FilterType = 'all' | 'working' | 'pending' | 'issues';
+import api from '../services/api';
 
 export function ChecklistHistory() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeFilter, setActiveFilter] = useState<FilterType>('all');
-  const [allSessions, setAllSessions] = useState<ChecklistHistoryType[]>([]);
+  const [activeFilter, setActiveFilter] = useState('All');
+  const [history, setHistory] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [user, setUser] = useState<User | null>(null);
 
-  useEffect(() => {
-    const userString = localStorage.getItem('user');
-    if (userString) {
-      setUser(JSON.parse(userString));
-    } else {
-      navigate('/login');
-    }
-  }, [navigate]);
+  const fetchHistory = async () => {
+    try {
+      setLoading(true);
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
+      const userId = user.id || localStorage.getItem("user_id");
 
-  useEffect(() => {
-    if (!user) return;
+      const res = await api.get(`/api/history/machines`, {
+        params: { creator_id: userId }
+      });
 
-    const fetchHistory = async () => {
-      try {
-        setLoading(true);
-        const data = await getChecklistMachines(user.id);
-        const pending = data.pending.map((m: any) => ({
-            ...m,
-            status: 'pending',
-            date: new Date().toISOString(),
-            checked_by: user.name,
-        }));
-        const completed = data.completed.map((m: any) => ({
-            ...m,
-            status: m.status === 'Working' ? 'working' : 'issues',
-            date: new Date().toISOString(), // This should ideally come from the backend
-            checked_by: user.name,
-        }));
-
-        setAllSessions([...pending, ...completed]);
-      } catch (err) {
-        setError("Failed to fetch checklist history.");
-      } finally {
-        setLoading(false);
+      if (res.data.status) {
+        setHistory(res.data.data || []);
+      } else {
+        setError("Failed to fetch history data.");
       }
-    };
+    } catch (err) {
+      console.error("History fetch error:", err);
+      setError("An error occurred while fetching history.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchHistory();
-  }, [user]);
+  }, []);
 
-  const filteredSessions = allSessions.filter((session) => {
-    if (activeFilter === 'working' && session.status !== 'working') return false;
-    if (activeFilter === 'pending' && session.status !== 'pending') return false;
-    if (activeFilter === 'issues' && session.status !== 'issues') return false;
-    
+  const formatDateTime = (date: string) => {
+    if (!date) return '-';
+    const d = new Date(date);
+    if (isNaN(d.getTime())) return '-';
+
+    return d.toLocaleString("en-US", {
+      month: "short",
+      day: "2-digit",
+      year: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true
+    }).replace(',', ' •');
+  };
+
+  const filteredData = useMemo(() => {
+    let data = history;
+    if (activeFilter !== "All") {
+      data = data.filter(item => item.status === activeFilter);
+    }
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
-      return (
-        session.machine_name.toLowerCase().includes(query) ||
-        session.serial_number.toLowerCase().includes(query)
+      data = data.filter(item =>
+        (item.machine_name || '').toLowerCase().includes(query) ||
+        (item.serial_number || '').toLowerCase().includes(query)
       );
     }
-    return true;
-  });
-
-  const filterCounts = {
-    all: allSessions.length,
-    working: allSessions.filter((s) => s.status === 'working').length,
-    pending: allSessions.filter((s) => s.status === 'pending').length,
-    issues: allSessions.filter((s) => s.status === 'issues').length
-  };
-
- const getStatusBadge = (session: ChecklistHistoryType) => {
-    switch (session.status) {
-      case 'working':
-        return <div className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-100 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 rounded-full text-xs font-bold uppercase tracking-wide"><CheckCircle className="w-3.5 h-3.5" />Working</div>;
-      case 'issues':
-        return <div className="flex items-center gap-1.5 px-3 py-1.5 bg-rose-100 dark:bg-rose-950/30 text-rose-700 dark:text-rose-400 rounded-full text-xs font-bold uppercase tracking-wide"><AlertCircle className="w-3.5 h-3.5" />Issues</div>;
-      case 'pending':
-        return <div className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-100 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 rounded-full text-xs font-bold uppercase tracking-wide"><Clock className="w-3.5 h-3.5" />Pending</div>;
-      case 'resolved': //This status is not available from the API for now
-        return <div className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-100 dark:bg-blue-950/30 text-blue-700 dark:text-blue-400 rounded-full text-xs font-bold uppercase tracking-wide"><CheckCircle2 className="w-3.5 h-3.5" />Resolved</div>;
-    }
-  };
-
-  const getBorderColor = (status: string) => {
-    switch (status) {
-      case 'working': return 'border-emerald-100 dark:border-emerald-900/30';
-      case 'issues': return 'border-rose-100 dark:border-rose-900/30';
-      case 'pending': return 'border-amber-100 dark:border-amber-900/30';
-      default: return 'border-slate-100 dark:border-slate-700';
-    }
-  };
+    return data;
+  }, [history, activeFilter, searchQuery]);
 
   return (
     <div
@@ -118,78 +85,131 @@ export function ChecklistHistory() {
         paddingBottom: 'calc(var(--safe-area-bottom) + 8rem)'
       }}>
 
-      <div className="max-w-md lg:max-w-6xl mx-auto px-5 lg:px-8 pt-6">
-        <header className="flex items-center gap-4 mb-6">
-          <button onClick={() => navigate(-1)} className="p-2 bg-white dark:bg-slate-900 rounded-full shadow-sm text-slate-400">
+      <div className="max-w-md  px-5 pt-6">
+        <div className="flex items-center gap-4 mb-2">
+          <button onClick={() => navigate(-1)} className="p-3 bg-white dark:bg-slate-900 rounded-full shadow-soft text-slate-400 hover:text-slate-600 transition-colors">
             <ArrowLeft className="w-6 h-6" />
           </button>
           <div>
             <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">History</h1>
-            <p className="text-sm text-slate-500 dark:text-slate-400">Inspection & issue records</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">
+              Inspection records • Last 7 Days
+            </p>
           </div>
-        </header>
+        </div>
 
-        <div className="lg:flex lg:items-center lg:gap-4 mb-6">
-          <div className="relative mb-4 lg:mb-0 lg:flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-            <input type="text" placeholder="Search sessions…" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full pl-9 pr-4 py-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 text-sm" />
-          </div>
-          <div className="flex gap-2 overflow-x-auto pb-1 lg:pb-0 lg:flex-shrink-0">
-            {/* Filter buttons */}
-          </div>
+        {/* Search Bar */}
+        <div className="relative my-6">
+          <input
+            type="text"
+            placeholder="Search sessions..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-5 pr-12 py-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-soft focus:ring-2 focus:ring-teal-500/20 focus:border-health-primary outline-none transition-all placeholder:text-slate-400 text-slate-700 dark:text-slate-200"
+          />
+          <Search className="absolute right-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300" />
+        </div>
+
+        {/* Filter Chips */}
+        <div className="flex gap-2.5 overflow-x-auto pb-4 no-scrollbar">
+          {["All", "Working", "Not Working", "Resolved"].map((f) => (
+            <button
+              key={f}
+              onClick={() => setActiveFilter(f)}
+              className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all whitespace-nowrap shadow-sm border ${activeFilter === f
+                ? "bg-health-primary text-white border-health-primary shadow-health-primary/30"
+                : "bg-white dark:bg-slate-900 text-slate-500 dark:text-slate-400 border-slate-100 dark:border-slate-800"
+                }`}
+            >
+              {f}
+            </button>
+          ))}
         </div>
 
         <AnimatePresence mode="popLayout">
           {loading ? (
-            <div className="flex justify-center p-10"><Loader className="animate-spin" /></div>
+            <div className="flex justify-center py-20">
+              <Loader className="w-8 h-8 text-health-primary animate-spin" />
+            </div>
           ) : error ? (
-            <div className="text-center py-10 text-red-500">{error}</div>
+            <div className="text-center py-10 text-rose-500 font-medium">{error}</div>
           ) : (
-            <div className="grid grid-cols-1 gap-4">
-              {filteredSessions.length === 0 ? (
-                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="col-span-full text-center py-12">
-                  <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Search className="w-8 h-8 text-slate-400" />
-                  </div>
-                  <h3 className="font-bold text-slate-800 dark:text-slate-100 mb-2">No sessions found</h3>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">Try adjusting your search or filter</p>
+            <div className="space-y-4">
+              {filteredData.length === 0 ? (
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-center py-20 bg-white dark:bg-slate-900 rounded-3xl border border-dashed border-slate-200 dark:border-slate-800">
+                  <AlertCircle className="w-12 h-12 text-slate-200  mb-3" />
+                  <p className="text-slate-400 font-medium">No records found</p>
                 </motion.div>
               ) : (
-                filteredSessions.map((session, index) => (
+                filteredData.map((item, index) => (
                   <motion.div
-                    key={session.id}
-                    layout
-                    initial={{ opacity: 0, y: 20 }}
+                    key={index}
+                    initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{ delay: index * 0.05 }}
-                    className={`bg-white dark:bg-slate-900 rounded-2xl p-5 shadow-sm border-2 transition-all ${getBorderColor(session.status)}`}>
-                    
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-bold text-slate-800 dark:text-slate-100 text-base mb-1">{session.machine_name}</h3>
-                        <p className="text-sm text-slate-500 dark:text-slate-400">{session.machine_type}</p>
+                    transition={{ delay: index * 0.03 }}
+                    className="bg-white dark:bg-slate-900 rounded-[2rem] p-6 shadow-soft border border-slate-50 dark:border-slate-800 relative group overflow-hidden"
+                  >
+                    {/* Top Row */}
+                    <div className="flex justify-between items-start mb-5">
+                      <div className="flex-1 min-w-0 pr-4">
+                        <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-1 truncate">
+                          {item.machine_name}
+                        </h2>
+                        <p className="text-xs font-semibold text-slate-400 tracking-wide">
+                          {item.machine_type || "Anesthesia Workstation"}
+                        </p>
                       </div>
-                      {getStatusBadge(session)}
+
+                      {/* Status Badge */}
+                      <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border shadow-sm ${item.status === "Working"
+                        ? "bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-950/20 dark:border-emerald-900/50"
+                        : item.status === "Not Working"
+                          ? "bg-rose-50 text-rose-600 border-rose-100 dark:bg-rose-950/20 dark:border-rose-900/50"
+                          : "bg-blue-50 text-blue-600 border-blue-100 dark:bg-blue-950/20 dark:border-blue-900/50"
+                        }`}>
+                        {item.status === "Not Working" ? (
+                          <AlertCircle className="w-3.5 h-3.5" />
+                        ) : (
+                          <CheckCircle className="w-3.5 h-3.5" />
+                        )}
+                        <span className="text-[10px] font-black uppercase tracking-wider">
+                          {item.status}
+                        </span>
+                      </div>
                     </div>
 
-                    <div className="space-y-2 mb-4 pb-4 border-b border-slate-100 dark:border-slate-700">
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-slate-400 dark:text-slate-500">Serial Number</span>
-                        <span className="font-mono font-bold text-slate-700 dark:text-slate-300">{session.serial_number}</span>
+                    {/* Details Grid */}
+                    <div className="grid grid-cols-1 gap-y-4 mb-6">
+                      <div className="flex justify-between items-start">
+                        <span className="text-sm font-semibold text-slate-400">Serial Number</span>
+                        <span className="text-sm font-bold text-slate-700 dark:text-slate-200">{item.serial_number || "-"}</span>
                       </div>
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-slate-400 dark:text-slate-500">Inspection Date</span>
-                        <span className="font-bold text-slate-700 dark:text-slate-300">{new Date(session.date).toLocaleDateString()}</span>
+                      <div className="flex justify-between items-start">
+                        <span className="text-sm font-semibold text-slate-400">Location</span>
+                        <span className="text-sm font-bold text-slate-700 dark:text-slate-200">{item.ot_name || "-"}</span>
+                      </div>
+                      <div className="flex justify-between items-start">
+                        <span className="text-sm font-semibold text-slate-400">Inspection Date</span>
+                        <span className="text-sm font-bold text-slate-700 dark:text-slate-200">
+                          {item.checked_at ? formatDateTime(item.checked_at) : "-"}
+                        </span>
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-slate-500 dark:text-slate-400">
-                        Checked by: <span className="font-bold text-slate-700 dark:text-slate-300">{session.checked_by}</span>
-                      </span>
-                      <button disabled className="flex items-center gap-1.5 text-sm font-bold text-slate-400 cursor-not-allowed">
-                        View Details <ChevronRight className="w-4 h-4" />
+                    {/* Footer - Checked by & View Details */}
+                    <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800 mt-2">
+                      <p className="text-sm text-slate-500 dark:text-slate-400">
+                        <span className="text-slate-400">Checked by:</span>{" "}
+                        <span className="font-bold text-slate-700 dark:text-slate-200">
+                          {item.checked_by || "-"}
+                        </span>
+                      </p>
+                      <button
+                        onClick={() => navigate(`/technician/inspection/${item.id}`)}
+                        className="flex items-center gap-1 text-health-primary font-bold text-sm hover:opacity-80 transition-opacity"
+                      >
+                        View Details
+                        <ChevronRight className="w-4 h-4" />
                       </button>
                     </div>
                   </motion.div>
@@ -200,5 +220,6 @@ export function ChecklistHistory() {
         </AnimatePresence>
       </div>
       <BottomNavigation role="technician" />
-    </div>);
+    </div>
+  );
 }

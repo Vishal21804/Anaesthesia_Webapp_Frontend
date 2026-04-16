@@ -18,20 +18,20 @@ export function HMRolePermissions() {
   });
   const handleSave = () => {
     // In real app, save to backend
-    navigate('/management/dashboard');
+    navigate('/hm-dashboard');
   };
   return (
     <div
-      className="min-h-screen bg-health-bg dark:bg-slate-950 transition-colors overflow-y-auto"
+      className="min-h-screen bg-health-bg dark:bg-slate-950 transition-colors overflow-y-auto text-left"
       style={{
         paddingTop: 'var(--safe-area-top)',
         paddingBottom: 'calc(var(--safe-area-bottom) + 8rem)'
       }}>
 
-      <div className="max-w-md mx-auto px-6 pt-8">
+      <div className="max-w-md  px-6 pt-8">
         <header className="flex items-center gap-4 mb-8">
           <button
-            onClick={() => navigate('/management/dashboard')}
+            onClick={() => navigate('/hm-dashboard')}
             className="p-2 bg-white dark:bg-slate-900 rounded-full shadow-sm text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
 
             <ArrowLeft className="w-6 h-6" />
@@ -71,10 +71,10 @@ export function HMRolePermissions() {
                 </div>
                 <button
                   onClick={() =>
-                  setAtPermissions({
-                    ...atPermissions,
-                    checklistVisibility: !atPermissions.checklistVisibility
-                  })
+                    setAtPermissions({
+                      ...atPermissions,
+                      checklistVisibility: !atPermissions.checklistVisibility
+                    })
                   }
                   className={`w-12 h-7 rounded-full transition-colors relative ${atPermissions.checklistVisibility ? 'bg-health-primary' : 'bg-slate-200 dark:bg-slate-700'}`}>
 
@@ -95,10 +95,10 @@ export function HMRolePermissions() {
                 </div>
                 <button
                   onClick={() =>
-                  setAtPermissions({
-                    ...atPermissions,
-                    issueReporting: !atPermissions.issueReporting
-                  })
+                    setAtPermissions({
+                      ...atPermissions,
+                      issueReporting: !atPermissions.issueReporting
+                    })
                   }
                   className={`w-12 h-7 rounded-full transition-colors relative ${atPermissions.issueReporting ? 'bg-health-primary' : 'bg-slate-200 dark:bg-slate-700'}`}>
 
@@ -119,10 +119,10 @@ export function HMRolePermissions() {
                 </div>
                 <button
                   onClick={() =>
-                  setAtPermissions({
-                    ...atPermissions,
-                    restrictOTs: !atPermissions.restrictOTs
-                  })
+                    setAtPermissions({
+                      ...atPermissions,
+                      restrictOTs: !atPermissions.restrictOTs
+                    })
                   }
                   className={`w-12 h-7 rounded-full transition-colors relative ${atPermissions.restrictOTs ? 'bg-health-primary' : 'bg-slate-200 dark:bg-slate-700'}`}>
 
@@ -153,10 +153,10 @@ export function HMRolePermissions() {
                 </div>
                 <button
                   onClick={() =>
-                  setBmetPermissions({
-                    ...bmetPermissions,
-                    maintenanceAccess: !bmetPermissions.maintenanceAccess
-                  })
+                    setBmetPermissions({
+                      ...bmetPermissions,
+                      maintenanceAccess: !bmetPermissions.maintenanceAccess
+                    })
                   }
                   className={`w-12 h-7 rounded-full transition-colors relative ${bmetPermissions.maintenanceAccess ? 'bg-blue-600' : 'bg-slate-200 dark:bg-slate-700'}`}>
 
@@ -175,10 +175,10 @@ export function HMRolePermissions() {
                 </div>
                 <button
                   onClick={() =>
-                  setBmetPermissions({
-                    ...bmetPermissions,
-                    issueResolution: !bmetPermissions.issueResolution
-                  })
+                    setBmetPermissions({
+                      ...bmetPermissions,
+                      issueResolution: !bmetPermissions.issueResolution
+                    })
                   }
                   className={`w-12 h-7 rounded-full transition-colors relative ${bmetPermissions.issueResolution ? 'bg-blue-600' : 'bg-slate-200 dark:bg-slate-700'}`}>
 
@@ -199,10 +199,10 @@ export function HMRolePermissions() {
                 </div>
                 <button
                   onClick={() =>
-                  setBmetPermissions({
-                    ...bmetPermissions,
-                    restrictCategories: !bmetPermissions.restrictCategories
-                  })
+                    setBmetPermissions({
+                      ...bmetPermissions,
+                      restrictCategories: !bmetPermissions.restrictCategories
+                    })
                   }
                   className={`w-12 h-7 rounded-full transition-colors relative ${bmetPermissions.restrictCategories ? 'bg-blue-600' : 'bg-slate-200 dark:bg-slate-700'}`}>
 

@@ -10,31 +10,85 @@ import {
   Plus,
   Trash2,
   Tag,
-  Hash } from
-'lucide-react';
+  Hash
+} from
+  'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BottomNavigation } from '../components/BottomNavigation';
-import { mockMachines, mockOTs } from '../data/mockData';
 import { OTCard } from '../components/OTCard';
+import { getMachineDetails } from '../services/machine';
+import { getOTList } from '../services/ot';
+import { Loader } from 'lucide-react';
 export function HMMachineDetail() {
   const navigate = useNavigate();
   const { machineId } = useParams();
-  const machine = mockMachines.find((m) => m.id === machineId);
-  const [assignedOTIds, setAssignedOTIds] = useState<string[]>(
-    machine?.assignedOTIds || (machine?.otId ? [machine.otId] : [])
-  );
-  if (!machine) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-health-bg dark:bg-slate-950">
-        <p className="text-slate-500">Machine not found</p>
-      </div>);
 
-  }
-  const assignedOTs = mockOTs.filter((ot) => assignedOTIds.includes(ot.id));
-  const handleRemoveOT = (otId: string) => {
-    // In a real app, this would be an API call
-    setAssignedOTIds((prev) => prev.filter((id) => id !== otId));
+  const [machine, setMachine] = useState<any>(null);
+  const [assignedOTs, setAssignedOTs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const user = JSON.parse(localStorage.getItem("user") || "{}");
+        const machineIdNum = parseInt(machineId || "0", 10);
+
+        const [machineData, otList] = await Promise.all([
+          getMachineDetails(machineIdNum, user.id),
+          getOTList(user.id)
+        ]);
+
+        setMachine(machineData.machine);
+
+        // In the backend, machine object might just return assigned_ots as an array of IDs
+        const assignedIds = machineData.machine?.assigned_ots || [];
+        const ots = (otList || []).filter((ot: any) => assignedIds.includes(ot.id));
+        setAssignedOTs(ots);
+      } catch (err: any) {
+        setError(err.response?.data?.detail || "Failed to load machine details.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (machineId) {
+      fetchData();
+    }
+  }, [machineId]);
+
+  const handleRemoveOT = async (otId: number) => {
+    try {
+      // Temporarily doing local state update to remove it from UI.
+      setAssignedOTs((prev) => prev.filter((ot) => ot.id !== otId));
+    } catch (err) {
+      console.error(err);
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen bg-health-bg dark:bg-slate-950 text-left">
+        <Loader className="w-8 h-8 text-purple-600 animate-spin" />
+        <p className="ml-2 text-slate-500">Loading details...</p>
+      </div>
+    );
+  }
+
+  if (error || !machine) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-health-bg dark:bg-slate-950">
+        <AlertCircle className="w-12 h-12 text-red-500 mb-4" />
+        <p className="text-slate-500">{error || "Machine not found"}</p>
+        <button
+          onClick={() => navigate('/management/machines')}
+          className="mt-4 px-4 py-2 bg-purple-600 text-white rounded-lg">
+          Go Back
+        </button>
+      </div>
+    );
+  }
   return (
     <div
       className="min-h-screen bg-health-bg dark:bg-slate-950 transition-colors overflow-y-auto"
@@ -43,7 +97,7 @@ export function HMMachineDetail() {
         paddingBottom: 'calc(var(--safe-area-bottom) + 8rem)'
       }}>
 
-      <div className="max-w-md mx-auto px-6 pt-8">
+      <div className="max-w-md  px-6 pt-8">
         <header className="flex items-center gap-4 mb-6">
           <button
             onClick={() => navigate('/management/machines')}
@@ -84,17 +138,17 @@ export function HMMachineDetail() {
                 </h2>
                 <div className="flex items-center gap-1 text-slate-500 dark:text-slate-400 text-xs mt-1">
                   <Tag className="w-3 h-3" />
-                  <span>{machine.model}</span>
+                  <span>{machine.machine_type || machine.type || "Machine"}</span>
                 </div>
               </div>
             </div>
             {machine.status === 'working' ?
-            <div className="px-2 py-1 bg-emerald-50 dark:bg-emerald-950/30 rounded-lg border border-emerald-100 dark:border-emerald-900/50 flex items-center gap-1 text-xs font-bold text-emerald-600 dark:text-emerald-500">
+              <div className="px-2 py-1 bg-emerald-50 dark:bg-emerald-950/30 rounded-lg border border-emerald-100 dark:border-emerald-900/50 flex items-center gap-1 text-xs font-bold text-emerald-600 dark:text-emerald-500">
                 <Activity className="w-3 h-3" />
                 Working
               </div> :
 
-            <div className="px-2 py-1 bg-rose-50 dark:bg-rose-950/30 rounded-lg border border-rose-100 dark:border-rose-900/50 flex items-center gap-1 text-xs font-bold text-rose-600 dark:text-rose-500">
+              <div className="px-2 py-1 bg-rose-50 dark:bg-rose-950/30 rounded-lg border border-rose-100 dark:border-rose-900/50 flex items-center gap-1 text-xs font-bold text-rose-600 dark:text-rose-500">
                 <AlertCircle className="w-3 h-3" />
                 Broken
               </div>
@@ -107,7 +161,7 @@ export function HMMachineDetail() {
                 <Hash className="w-3 h-3" /> Serial Number
               </p>
               <p className="text-sm font-bold text-slate-800 dark:text-slate-100 font-mono">
-                {machine.serialNumber}
+                {machine.serial_number || machine.serialNumber || 'N/A'}
               </p>
             </div>
             <div>
@@ -115,7 +169,7 @@ export function HMMachineDetail() {
                 <Clock className="w-3 h-3" /> Last Checked
               </p>
               <p className="text-sm font-bold text-slate-800 dark:text-slate-100">
-                {machine.lastChecked}
+                {machine.last_checked || machine.lastChecked || 'Never'}
               </p>
             </div>
           </div>
@@ -128,7 +182,7 @@ export function HMMachineDetail() {
           </h3>
           <button
             onClick={() =>
-            navigate(`/management/machine-assign-ots/${machineId}`)
+              navigate(`/management/assign-machine/${machineId}`)
             }
             className="text-sm font-bold text-purple-600 dark:text-purple-400 flex items-center gap-1 hover:text-purple-700 transition-colors">
 
@@ -140,53 +194,53 @@ export function HMMachineDetail() {
         <div className="space-y-4">
           <AnimatePresence mode="popLayout">
             {assignedOTs.length > 0 ?
-            assignedOTs.map((ot, index) =>
-            <motion.div
-              key={ot.id}
-              initial={{
-                y: 20,
-                opacity: 0
-              }}
-              animate={{
-                y: 0,
-                opacity: 1
-              }}
-              exit={{
-                scale: 0.95,
-                opacity: 0
-              }}
-              transition={{
-                delay: index * 0.05
-              }}
-              className="relative group">
+              assignedOTs.map((ot, index) =>
+                <motion.div
+                  key={ot.id}
+                  initial={{
+                    y: 20,
+                    opacity: 0
+                  }}
+                  animate={{
+                    y: 0,
+                    opacity: 1
+                  }}
+                  exit={{
+                    scale: 0.95,
+                    opacity: 0
+                  }}
+                  transition={{
+                    delay: index * 0.05
+                  }}
+                  className="relative group">
 
                   <OTCard
-                ot={ot}
-                onClick={() => navigate(`/management/ot-detail/${ot.id}`)} />
+                    ot={ot}
+                    onClick={() => navigate(`/management/ot`)} />
 
                   <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleRemoveOT(ot.id);
-                }}
-                className="absolute top-4 right-4 p-2 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-lg shadow-sm border border-slate-100 dark:border-slate-700 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition-colors z-20"
-                aria-label="Remove assignment">
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleRemoveOT(ot.id);
+                    }}
+                    className="absolute top-4 right-4 p-2 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-lg shadow-sm border border-slate-100 dark:border-slate-700 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition-colors z-20"
+                    aria-label="Remove assignment">
 
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </motion.div>
-            ) :
+              ) :
 
-            <motion.div
-              initial={{
-                opacity: 0
-              }}
-              animate={{
-                opacity: 1
-              }}
-              className="text-center py-12 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 border-dashed">
+              <motion.div
+                initial={{
+                  opacity: 0
+                }}
+                animate={{
+                  opacity: 1
+                }}
+                className="text-center py-12 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 border-dashed">
 
-                <div className="w-12 h-12 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-3 text-slate-400">
+                <div className="w-12 h-12 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center  mb-3 text-slate-400">
                   <MapPin className="w-6 h-6" />
                 </div>
                 <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">

@@ -6,8 +6,9 @@ import {
   AlertTriangle,
   TrendingUp,
   Clock,
-  BarChart3 } from
-'lucide-react';
+  BarChart3
+} from
+  'lucide-react';
 import { motion } from 'framer-motion';
 import { mockOTs, mockMachines } from '../data/mockData';
 import { BottomNavigation } from '../components/BottomNavigation';
@@ -28,7 +29,7 @@ export function HMComplianceDashboard() {
         totalMachines - checkedToday - Math.floor(Math.random() * 2)
       );
       const compliancePercentage =
-      totalMachines > 0 ? Math.round(checkedToday / totalMachines * 100) : 0;
+        totalMachines > 0 ? Math.round(checkedToday / totalMachines * 100) : 0;
       return {
         otId: ot.id,
         otName: ot.name,
@@ -55,7 +56,7 @@ export function HMComplianceDashboard() {
   };
   return (
     <div
-      className="min-h-[917px] bg-slate-50 dark:bg-slate-950 transition-colors overflow-y-auto"
+      className="min-h-[917px] bg-slate-50 dark:bg-slate-950 transition-colors overflow-y-auto text-left"
       style={{
         paddingTop: 'var(--safe-area-top)',
         paddingBottom: 'calc(var(--safe-area-bottom) + 8rem)'
@@ -65,7 +66,7 @@ export function HMComplianceDashboard() {
       <div className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-5 py-4">
         <div className="flex items-center gap-3">
           <button
-            onClick={() => navigate('/management/dashboard')}
+            onClick={() => navigate('/hm-dashboard')}
             className="w-10 h-10 bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center text-slate-600 dark:text-slate-300">
 
             <ArrowLeft className="w-5 h-5" />
@@ -185,7 +186,7 @@ export function HMComplianceDashboard() {
                     </span>
                   </div>
                   {ot.overdueCount > 0 &&
-                  <div className="flex items-center gap-1.5 text-rose-600 dark:text-rose-400">
+                    <div className="flex items-center gap-1.5 text-rose-600 dark:text-rose-400">
                       <AlertTriangle className="w-3.5 h-3.5" />
                       <span className="font-medium">
                         {ot.overdueCount} overdue

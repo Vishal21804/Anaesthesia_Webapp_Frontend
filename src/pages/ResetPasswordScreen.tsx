@@ -41,7 +41,7 @@ export function ResetPasswordScreen() {
   };
   return (
     <div className="min-h-screen bg-health-bg dark:bg-slate-950 flex flex-col justify-center p-6 transition-colors">
-      <div className="max-w-md mx-auto w-full">
+      <div className="max-w-md  w-full">
         <motion.div
           initial={{
             y: -20,

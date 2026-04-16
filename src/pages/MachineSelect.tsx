@@ -31,7 +31,7 @@ export function MachineSelect() {
         paddingBottom: 'calc(var(--safe-area-bottom) + 8rem)'
       }}>
 
-      <div className="max-w-md mx-auto px-6 pt-8">
+      <div className="max-w-md  px-6 pt-8">
         <header className="flex items-center gap-4 mb-8">
           <button
             onClick={() => navigate(-1)}
@@ -61,7 +61,7 @@ export function MachineSelect() {
           }}
           className="bg-white dark:bg-slate-900 rounded-2xl p-8 shadow-sm border border-slate-100 dark:border-slate-700 text-center">
 
-            <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-950/30 rounded-full flex items-center justify-center text-emerald-600 dark:text-emerald-400 mx-auto mb-4">
+            <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-950/30 rounded-full flex items-center justify-center text-emerald-600 dark:text-emerald-400  mb-4">
               <CheckCircle className="w-8 h-8" />
             </div>
             <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-2">

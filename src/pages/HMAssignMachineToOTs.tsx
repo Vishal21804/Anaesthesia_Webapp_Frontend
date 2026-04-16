@@ -34,13 +34,13 @@ export function HMAssignMachineToOTs() {
   };
   return (
     <div
-      className="min-h-screen bg-health-bg dark:bg-slate-950 transition-colors overflow-y-auto"
+      className="min-h-screen bg-health-bg dark:bg-slate-950 transition-colors overflow-y-auto text-left"
       style={{
         paddingTop: 'var(--safe-area-top)',
         paddingBottom: 'calc(var(--safe-area-bottom) + 8rem)'
       }}>
 
-      <div className="max-w-md mx-auto px-6 pt-8">
+      <div className="max-w-md  px-6 pt-8">
         <header className="flex items-center gap-4 mb-6">
           <button
             onClick={() => navigate(-1)}
@@ -133,7 +133,7 @@ export function HMAssignMachineToOTs() {
         </div>
 
         {/* Floating Action Button */}
-        <div className="fixed bottom-24 left-0 right-0 px-6 max-w-md mx-auto z-20">
+        <div className="fixed bottom-24 left-0 right-0 px-6 max-w-md  z-20">
           <button
             onClick={handleSave}
             disabled={isSubmitting}

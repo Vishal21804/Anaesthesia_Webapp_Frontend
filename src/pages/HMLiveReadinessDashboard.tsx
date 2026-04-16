@@ -7,8 +7,9 @@ import {
   AlertTriangle,
   XCircle,
   Clock,
-  Activity } from
-'lucide-react';
+  Activity
+} from
+  'lucide-react';
 import { motion } from 'framer-motion';
 import { BottomNavigation } from '../components/BottomNavigation';
 import { mockOTs, mockMachines } from '../data/mockData';
@@ -23,7 +24,7 @@ export function HMLiveReadinessDashboard() {
     // Simulate random readiness for demo
     const ready = Math.floor(total * (0.6 + Math.random() * 0.4));
     const status =
-    ready === total ? 'READY' : ready > total / 2 ? 'PARTIAL' : 'NOT READY';
+      ready === total ? 'READY' : ready > total / 2 ? 'PARTIAL' : 'NOT READY';
     return {
       ...ot,
       total,
@@ -56,10 +57,10 @@ export function HMLiveReadinessDashboard() {
   const Radius = 80;
   const Circumference = 2 * Math.PI * Radius;
   const StrokeDashoffset =
-  Circumference - overallPercentage / 100 * Circumference;
+    Circumference - overallPercentage / 100 * Circumference;
   return (
     <div
-      className="min-h-[917px] bg-slate-50 dark:bg-slate-950 transition-colors overflow-y-auto"
+      className="min-h-[917px] bg-slate-50 dark:bg-slate-950 transition-colors overflow-y-auto text-left"
       style={{
         paddingTop: 'var(--safe-area-top)',
         paddingBottom: 'calc(var(--safe-area-bottom) + 8rem)'
@@ -70,7 +71,7 @@ export function HMLiveReadinessDashboard() {
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
             <button
-              onClick={() => navigate('/management/dashboard')}
+              onClick={() => navigate('/hm-dashboard')}
               className="w-10 h-10 bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center text-slate-600 dark:text-slate-300">
 
               <ArrowLeft className="w-5 h-5" />
@@ -159,20 +160,20 @@ export function HMLiveReadinessDashboard() {
         </h2>
         <div className="grid gap-4">
           {otReadiness.map((ot, index) =>
-          <motion.div
-            key={ot.id}
-            initial={{
-              y: 20,
-              opacity: 0
-            }}
-            animate={{
-              y: 0,
-              opacity: 1
-            }}
-            transition={{
-              delay: index * 0.1
-            }}
-            className="bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-200 dark:border-slate-800 shadow-sm">
+            <motion.div
+              key={ot.id}
+              initial={{
+                y: 20,
+                opacity: 0
+              }}
+              animate={{
+                y: 0,
+                opacity: 1
+              }}
+              transition={{
+                delay: index * 0.1
+              }}
+              className="bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-200 dark:border-slate-800 shadow-sm">
 
               <div className="flex items-start justify-between mb-4">
                 <div>
@@ -185,7 +186,7 @@ export function HMLiveReadinessDashboard() {
                   </div>
                 </div>
                 <div
-                className={`px-3 py-1 rounded-full text-xs font-bold border ${getStatusColor(ot.status)}`}>
+                  className={`px-3 py-1 rounded-full text-xs font-bold border ${getStatusColor(ot.status)}`}>
 
                   {ot.status}
                 </div>
@@ -202,10 +203,10 @@ export function HMLiveReadinessDashboard() {
                 </div>
                 <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                   <div
-                  className={`h-full rounded-full transition-all duration-500 ${ot.status === 'READY' ? 'bg-emerald-500' : ot.status === 'PARTIAL' ? 'bg-amber-500' : 'bg-rose-500'}`}
-                  style={{
-                    width: `${ot.ready / ot.total * 100}%`
-                  }} />
+                    className={`h-full rounded-full transition-all duration-500 ${ot.status === 'READY' ? 'bg-emerald-500' : ot.status === 'PARTIAL' ? 'bg-amber-500' : 'bg-rose-500'}`}
+                    style={{
+                      width: `${ot.ready / ot.total * 100}%`
+                    }} />
 
                 </div>
               </div>

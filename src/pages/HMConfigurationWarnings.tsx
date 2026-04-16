@@ -9,8 +9,9 @@ import {
   Settings,
   XCircle,
   ChevronRight,
-  Filter } from
-'lucide-react';
+  Filter
+} from
+  'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BottomNavigation } from '../components/BottomNavigation';
 import { useAppData } from '../contexts/AppDataContext';
@@ -49,14 +50,14 @@ export function HMConfigurationWarnings() {
   const { configWarnings, updateConfigWarning, addAuditEntry } = useAppData();
   const [filterStatus, setFilterStatus] = useState<
     ConfigurationWarningStatus | 'all'>(
-    'all');
+      'all');
   const [selectedWarning, setSelectedWarning] =
-  useState<ConfigurationWarning | null>(null);
+    useState<ConfigurationWarning | null>(null);
   const [showActionModal, setShowActionModal] = useState(false);
   const filteredWarnings =
-  filterStatus === 'all' ?
-  configWarnings :
-  configWarnings.filter((w) => w.status === filterStatus);
+    filterStatus === 'all' ?
+      configWarnings :
+      configWarnings.filter((w) => w.status === filterStatus);
   const sortedWarnings = [...filteredWarnings].sort((a, b) => {
     // Open first, then acknowledged, then resolved
     const statusOrder = {
@@ -73,7 +74,7 @@ export function HMConfigurationWarnings() {
     all: configWarnings.length,
     open: configWarnings.filter((w) => w.status === 'open').length,
     acknowledged: configWarnings.filter((w) => w.status === 'acknowledged').
-    length,
+      length,
     resolved: configWarnings.filter((w) => w.status === 'resolved').length
   };
   const handleAcknowledge = (warning: ConfigurationWarning) => {
@@ -95,9 +96,8 @@ export function HMConfigurationWarnings() {
     setSelectedWarning(null);
   };
   const handleResolve = (
-  warning: ConfigurationWarning,
-  resolution: 'ot_corrected' | 'machine_deactivated' | 'other') =>
-  {
+    warning: ConfigurationWarning,
+    resolution: 'ot_corrected' | 'machine_deactivated' | 'other') => {
     updateConfigWarning(warning.id, {
       status: 'resolved',
       resolvedAt: new Date().toISOString(),
@@ -112,11 +112,11 @@ export function HMConfigurationWarnings() {
       targetId: warning.id,
       targetName: warning.machineName,
       details:
-      resolution === 'ot_corrected' ?
-      'OT assignment corrected' :
-      resolution === 'machine_deactivated' ?
-      'Machine deactivated' :
-      'Resolved'
+        resolution === 'ot_corrected' ?
+          'OT assignment corrected' :
+          resolution === 'machine_deactivated' ?
+            'Machine deactivated' :
+            'Resolved'
     });
     setShowActionModal(false);
     setSelectedWarning(null);
@@ -135,10 +135,10 @@ export function HMConfigurationWarnings() {
     const Icon = config.icon;
     const colorClasses = {
       amber:
-      'bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800/50',
+        'bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800/50',
       blue: 'bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800/50',
       emerald:
-      'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800/50'
+        'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800/50'
     };
     return (
       <div
@@ -151,7 +151,7 @@ export function HMConfigurationWarnings() {
   };
   return (
     <div
-      className="min-h-[917px] bg-slate-50 dark:bg-slate-950 transition-colors overflow-y-auto"
+      className="min-h-[917px] bg-slate-50 dark:bg-slate-950 transition-colors overflow-y-auto text-left"
       style={{
         paddingTop: 'var(--safe-area-top)',
         paddingBottom: 'calc(var(--safe-area-bottom) + 8rem)'
@@ -161,7 +161,7 @@ export function HMConfigurationWarnings() {
       <div className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-5 py-4">
         <div className="flex items-center gap-3 mb-4">
           <button
-            onClick={() => navigate('/management/dashboard')}
+            onClick={() => navigate('/hm-dashboard')}
             className="w-10 h-10 bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center text-slate-600 dark:text-slate-300">
 
             <ArrowLeft className="w-5 h-5" />
@@ -183,10 +183,10 @@ export function HMConfigurationWarnings() {
         <div className="flex gap-2 overflow-x-auto pb-1">
           {(['all', 'open', 'acknowledged', 'resolved'] as const).map(
             (status) =>
-            <button
-              key={status}
-              onClick={() => setFilterStatus(status)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-colors ${filterStatus === status ? 'bg-purple-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'}`}>
+              <button
+                key={status}
+                onClick={() => setFilterStatus(status)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-colors ${filterStatus === status ? 'bg-purple-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'}`}>
 
                 {status.charAt(0).toUpperCase() + status.slice(1)} (
                 {counts[status]})
@@ -199,18 +199,18 @@ export function HMConfigurationWarnings() {
       {/* Warnings List */}
       <div className="px-5 py-4">
         {sortedWarnings.length === 0 ?
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: 20
-          }}
-          animate={{
-            opacity: 1,
-            y: 0
-          }}
-          className="text-center py-12">
+          <motion.div
+            initial={{
+              opacity: 0,
+              y: 20
+            }}
+            animate={{
+              opacity: 1,
+              y: 0
+            }}
+            className="text-center py-12">
 
-            <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center  mb-4">
               <MapPinOff className="w-8 h-8 text-slate-400" />
             </div>
             <h3 className="font-bold text-slate-800 dark:text-slate-100 mb-2">
@@ -218,32 +218,32 @@ export function HMConfigurationWarnings() {
             </h3>
             <p className="text-sm text-slate-500 dark:text-slate-400">
               {filterStatus === 'all' ?
-            'No configuration warnings have been reported.' :
-            `No ${filterStatus} warnings.`}
+                'No configuration warnings have been reported.' :
+                `No ${filterStatus} warnings.`}
             </p>
           </motion.div> :
 
-        <div className="space-y-3">
+          <div className="space-y-3">
             <AnimatePresence mode="popLayout">
               {sortedWarnings.map((warning, index) =>
-            <motion.div
-              key={warning.id}
-              initial={{
-                opacity: 0,
-                y: 20
-              }}
-              animate={{
-                opacity: 1,
-                y: 0
-              }}
-              exit={{
-                opacity: 0,
-                scale: 0.95
-              }}
-              transition={{
-                delay: index * 0.05
-              }}
-              className="bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-200 dark:border-slate-800">
+                <motion.div
+                  key={warning.id}
+                  initial={{
+                    opacity: 0,
+                    y: 20
+                  }}
+                  animate={{
+                    opacity: 1,
+                    y: 0
+                  }}
+                  exit={{
+                    opacity: 0,
+                    scale: 0.95
+                  }}
+                  transition={{
+                    delay: index * 0.05
+                  }}
+                  className="bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-200 dark:border-slate-800">
 
                   {/* Header Row */}
                   <div className="flex items-start justify-between mb-3">
@@ -293,7 +293,7 @@ export function HMConfigurationWarnings() {
                       </span>
                     </div>
                     {warning.notes &&
-                <div className="pt-2">
+                      <div className="pt-2">
                         <span className="text-xs text-slate-400 dark:text-slate-500">
                           Notes:
                         </span>
@@ -301,25 +301,25 @@ export function HMConfigurationWarnings() {
                           "{warning.notes}"
                         </p>
                       </div>
-                }
+                    }
                   </div>
 
                   {/* Actions */}
                   {warning.status !== 'resolved' &&
-              <button
-                onClick={() => {
-                  setSelectedWarning(warning);
-                  setShowActionModal(true);
-                }}
-                className="w-full bg-purple-50 dark:bg-purple-950/30 text-purple-600 dark:text-purple-400 font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2 hover:bg-purple-100 dark:hover:bg-purple-950/50 transition-colors">
+                    <button
+                      onClick={() => {
+                        setSelectedWarning(warning);
+                        setShowActionModal(true);
+                      }}
+                      className="w-full bg-purple-50 dark:bg-purple-950/30 text-purple-600 dark:text-purple-400 font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2 hover:bg-purple-100 dark:hover:bg-purple-950/50 transition-colors">
 
                       <Settings className="w-4 h-4" />
                       Take Action
                     </button>
-              }
+                  }
 
                   {warning.status === 'resolved' && warning.resolution &&
-              <div className="bg-emerald-50 dark:bg-emerald-950/20 rounded-xl p-3">
+                    <div className="bg-emerald-50 dark:bg-emerald-950/20 rounded-xl p-3">
                       <div className="flex items-center gap-2 mb-1">
                         <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                         <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase">
@@ -328,16 +328,16 @@ export function HMConfigurationWarnings() {
                       </div>
                       <p className="text-xs text-slate-600 dark:text-slate-400">
                         {warning.resolution === 'ot_corrected' &&
-                  'OT assignment corrected'}
+                          'OT assignment corrected'}
                         {warning.resolution === 'machine_deactivated' &&
-                  'Machine deactivated'}
+                          'Machine deactivated'}
                         {warning.resolution === 'other' && 'Marked as resolved'}
                         {warning.resolvedBy && ` by ${warning.resolvedBy}`}
                       </p>
                     </div>
-              }
+                  }
                 </motion.div>
-            )}
+              )}
             </AnimatePresence>
           </div>
         }
@@ -346,41 +346,41 @@ export function HMConfigurationWarnings() {
       {/* Action Modal */}
       <AnimatePresence>
         {showActionModal && selectedWarning &&
-        <motion.div
-          initial={{
-            opacity: 0
-          }}
-          animate={{
-            opacity: 1
-          }}
-          exit={{
-            opacity: 0
-          }}
-          className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center"
-          onClick={() => setShowActionModal(false)}>
-
-            <motion.div
+          <motion.div
             initial={{
-              y: '100%'
+              opacity: 0
             }}
             animate={{
-              y: 0
+              opacity: 1
             }}
             exit={{
-              y: '100%'
+              opacity: 0
             }}
-            transition={{
-              type: 'spring',
-              damping: 25,
-              stiffness: 300
-            }}
-            onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-md bg-white dark:bg-slate-900 rounded-t-3xl p-6"
-            style={{
-              paddingBottom: 'calc(var(--safe-area-bottom) + 1.5rem)'
-            }}>
+            className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center"
+            onClick={() => setShowActionModal(false)}>
 
-              <div className="w-12 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full mx-auto mb-6" />
+            <motion.div
+              initial={{
+                y: '100%'
+              }}
+              animate={{
+                y: 0
+              }}
+              exit={{
+                y: '100%'
+              }}
+              transition={{
+                type: 'spring',
+                damping: 25,
+                stiffness: 300
+              }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-md bg-white dark:bg-slate-900 rounded-t-3xl p-6"
+              style={{
+                paddingBottom: 'calc(var(--safe-area-bottom) + 1.5rem)'
+              }}>
+
+              <div className="w-12 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full  mb-6" />
 
               <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">
                 Take Action
@@ -392,44 +392,44 @@ export function HMConfigurationWarnings() {
 
               <div className="space-y-3">
                 {selectedWarning.status === 'open' &&
-              <button
-                onClick={() => handleAcknowledge(selectedWarning)}
-                className="w-full bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-400 font-bold py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-blue-100 dark:hover:bg-blue-950/50 transition-colors">
+                  <button
+                    onClick={() => handleAcknowledge(selectedWarning)}
+                    className="w-full bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-400 font-bold py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-blue-100 dark:hover:bg-blue-950/50 transition-colors">
 
                     <Eye className="w-5 h-5" />
                     Acknowledge Warning
                   </button>
-              }
+                }
 
                 <button
-                onClick={() => handleResolve(selectedWarning, 'ot_corrected')}
-                className="w-full bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 font-bold py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-emerald-100 dark:hover:bg-emerald-950/50 transition-colors">
+                  onClick={() => handleResolve(selectedWarning, 'ot_corrected')}
+                  className="w-full bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 font-bold py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-emerald-100 dark:hover:bg-emerald-950/50 transition-colors">
 
                   <CheckCircle2 className="w-5 h-5" />
                   Correct OT Assignment
                 </button>
 
                 <button
-                onClick={() =>
-                handleResolve(selectedWarning, 'machine_deactivated')
-                }
-                className="w-full bg-rose-50 dark:bg-rose-950/30 text-rose-700 dark:text-rose-400 font-bold py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-rose-100 dark:hover:bg-rose-950/50 transition-colors">
+                  onClick={() =>
+                    handleResolve(selectedWarning, 'machine_deactivated')
+                  }
+                  className="w-full bg-rose-50 dark:bg-rose-950/30 text-rose-700 dark:text-rose-400 font-bold py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-rose-100 dark:hover:bg-rose-950/50 transition-colors">
 
                   <XCircle className="w-5 h-5" />
                   Deactivate Machine
                 </button>
 
                 <button
-                onClick={() => handleResolve(selectedWarning, 'other')}
-                className="w-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+                  onClick={() => handleResolve(selectedWarning, 'other')}
+                  className="w-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
 
                   Mark as Resolved
                 </button>
               </div>
 
               <button
-              onClick={() => setShowActionModal(false)}
-              className="w-full mt-4 text-slate-500 dark:text-slate-400 font-semibold py-3">
+                onClick={() => setShowActionModal(false)}
+                className="w-full mt-4 text-slate-500 dark:text-slate-400 font-semibold py-3">
 
                 Cancel
               </button>

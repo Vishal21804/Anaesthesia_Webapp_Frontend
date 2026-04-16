@@ -1,5 +1,5 @@
-import React from 'react';
-import { Settings2Icon, Clock, ChevronRight } from 'lucide-react';
+
+import { Settings2Icon, ChevronRight } from 'lucide-react';
 import { Machine } from '../types';
 
 interface MachineCardProps {
@@ -40,7 +40,6 @@ export function MachineCard({
   };
 
   const displayType = machine.machine_type || 'Unknown Type';
-  const displaySerial = machine.serial_number ? ` • ${machine.serial_number}` : '';
 
   return (
     <div
@@ -61,17 +60,19 @@ export function MachineCard({
             {machine.machine_name}
           </h3>
           {showStatus &&
-          <span
-            className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${getStatusColor(machine.status)}`}>
+            <span
+              className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${getStatusColor(machine.status)}`}>
 
               {machine.status}
             </span>
           }
         </div>
 
-        <p className="text-sm text-slate-500 dark:text-slate-400 truncate mt-0.5">
+        <p className="text-sm font-medium text-slate-500/80 dark:text-slate-400 truncate mt-0.5">
           {displayType}
-          {displaySerial}
+        </p>
+        <p className="text-xs text-slate-400 dark:text-slate-500 truncate mt-0.5">
+          SN: {machine.serial_number || 'N/A'}
         </p>
       </div>
 

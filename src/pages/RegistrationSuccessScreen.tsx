@@ -25,7 +25,7 @@ export function RegistrationSuccessScreen() {
 
   return (
     <div className="min-h-screen bg-health-bg dark:bg-slate-950 flex flex-col justify-center p-6 transition-colors">
-      <div className="max-w-md mx-auto w-full">
+      <div className="max-w-md  w-full">
         <motion.div
           initial={{
             scale: 0.8,
@@ -37,7 +37,7 @@ export function RegistrationSuccessScreen() {
           }}
           className="text-center mb-8">
 
-          <div className="w-20 h-20 bg-emerald-100 dark:bg-emerald-950/30 rounded-full flex items-center justify-center text-emerald-600 dark:text-emerald-400 mx-auto mb-6">
+          <div className="w-20 h-20 bg-emerald-100 dark:bg-emerald-950/30 rounded-full flex items-center justify-center text-emerald-600 dark:text-emerald-400  mb-6">
             <CheckCircle className="w-10 h-10" />
           </div>
 

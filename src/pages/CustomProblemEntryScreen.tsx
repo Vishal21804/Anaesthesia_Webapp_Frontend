@@ -13,7 +13,7 @@ export function CustomProblemEntryScreen() {
   };
   return (
     <div className="min-h-screen bg-health-bg dark:bg-slate-950 pb-32 transition-colors">
-      <div className="max-w-md mx-auto px-6 pt-8">
+      <div className="max-w-md  px-6 pt-8">
         <header className="flex items-center gap-4 mb-8">
           <button
             onClick={() => navigate(-1)}

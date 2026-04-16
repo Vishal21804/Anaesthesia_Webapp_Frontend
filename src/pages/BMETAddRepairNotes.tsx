@@ -24,7 +24,7 @@ export function BMETAddRepairNotes() {
         paddingBottom: 'calc(var(--safe-area-bottom) + 2rem)'
       }}>
 
-      <div className="max-w-md mx-auto px-6 pt-8 pb-8">
+      <div className="max-w-md  px-6 pt-8 pb-8">
         <header className="flex items-center gap-4 mb-8">
           <button
             onClick={() => navigate(-1)}

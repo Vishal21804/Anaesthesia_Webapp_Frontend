@@ -9,7 +9,7 @@ export function PasswordResetEmailSentScreen() {
   new URLSearchParams(location.search).get('email') || 'your email';
   return (
     <div className="min-h-screen bg-health-bg dark:bg-slate-950 flex flex-col justify-center p-6 transition-colors">
-      <div className="max-w-md mx-auto w-full text-center">
+      <div className="max-w-md  w-full text-center">
         <motion.div
           initial={{
             scale: 0.8,
@@ -19,7 +19,7 @@ export function PasswordResetEmailSentScreen() {
             scale: 1,
             opacity: 1
           }}
-          className="w-20 h-20 bg-blue-100 dark:bg-blue-950/30 rounded-full flex items-center justify-center text-blue-600 dark:text-blue-400 mx-auto mb-6">
+          className="w-20 h-20 bg-blue-100 dark:bg-blue-950/30 rounded-full flex items-center justify-center text-blue-600 dark:text-blue-400  mb-6">
 
           <Mail className="w-10 h-10" />
         </motion.div>

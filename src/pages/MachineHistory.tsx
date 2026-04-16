@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   ArrowLeft,
@@ -9,12 +9,12 @@ import {
   Clock,
   User,
   CheckCircle2,
-  Filter } from
-'lucide-react';
+  Filter,
+  Loader
+} from 'lucide-react';
 import { BottomNavigation } from '../components/BottomNavigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { mockMachines } from '../data/mockData';
-import { useAppData } from '../contexts/AppDataContext';
+import { getMachineDetails, getMachineHistoryById } from '../services/machine';
 type HistoryStatus = 'working' | 'not-working' | 'resolved';
 type FilterType = 'all' | 'working' | 'not-working' | 'resolved';
 interface HistoryItem {
@@ -42,129 +42,53 @@ function getTimeGroup(date: Date): string {
 export function MachineHistory() {
   const navigate = useNavigate();
   const { machineId } = useParams();
-  const { issues } = useAppData();
-  // Get current machine
-  const machine = mockMachines.find((m) => m.id === machineId);
-  // Filter state
+  const [machine, setMachine] = useState<any>(null);
+  const [historyItems, setHistoryItems] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState<FilterType>('all');
-  // Build history data with resolved status from issues context
-  const historyItems: HistoryItem[] = useMemo(() => {
-    const now = new Date();
-    const baseItems: HistoryItem[] = [
-    {
-      id: 1,
-      date: 'Today, 2:30 PM',
-      rawDate: new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate(),
-        14,
-        30
-      ),
-      status: 'working',
-      itemsChecked: 12,
-      totalItems: 12,
-      checkedBy: 'Alex Taylor'
-    },
-    {
-      id: 2,
-      date: 'Today, 11:45 AM',
-      rawDate: new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate(),
-        11,
-        45
-      ),
-      status: 'not-working',
-      itemsChecked: 12,
-      totalItems: 12,
-      checkedBy: 'Alex Taylor'
-    },
-    {
-      id: 3,
-      date: 'Yesterday, 4:15 PM',
-      rawDate: new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate() - 1,
-        16,
-        15
-      ),
-      status: 'resolved',
-      itemsChecked: 12,
-      totalItems: 12,
-      checkedBy: 'Alex Taylor',
-      resolvedBy: 'David Chen',
-      resolvedAt: 'Yesterday, 6:30 PM'
-    },
-    {
-      id: 4,
-      date: 'Jan 25, 9:00 AM',
-      rawDate: new Date(2025, 0, 25, 9, 0),
-      status: 'working',
-      itemsChecked: 12,
-      totalItems: 12,
-      checkedBy: 'Maria Garcia'
-    },
-    {
-      id: 5,
-      date: 'Jan 24, 3:20 PM',
-      rawDate: new Date(2025, 0, 24, 15, 20),
-      status: 'resolved',
-      itemsChecked: 12,
-      totalItems: 12,
-      checkedBy: 'Alex Taylor',
-      resolvedBy: 'James Wilson',
-      resolvedAt: 'Jan 24, 5:45 PM'
-    }];
 
-    // Check if any issues for this machine are resolved
-    const machineIssues = issues.filter((i) => i.machineId === machineId);
-    return baseItems.map((item) => {
-      // If there's a resolved issue that matches timing, update status
-      if (item.status === 'not-working') {
-        const resolvedIssue = machineIssues.find((i) => i.status === 'resolved');
-        if (resolvedIssue) {
-          return {
-            ...item,
-            status: 'resolved' as HistoryStatus,
-            resolvedBy: resolvedIssue.resolvedBy || 'BMET Team',
-            resolvedAt: resolvedIssue.resolvedAt ?
-            new Date(resolvedIssue.resolvedAt).toLocaleString('en-US', {
-              month: 'short',
-              day: 'numeric',
-              hour: 'numeric',
-              minute: '2-digit'
-            }) :
-            undefined
-          };
-        }
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const user = JSON.parse(localStorage.getItem("user") || "{}");
+        const [machineData, historyData] = await Promise.all([
+          getMachineDetails(Number(machineId), user.id),
+          getMachineHistoryById(Number(machineId), user.id)
+        ]);
+        setMachine(machineData);
+        setHistoryItems(historyData || []);
+      } catch (err) {
+        console.error("Failed to fetch machine history");
+      } finally {
+        setLoading(false);
       }
-      return item;
-    });
-  }, [machineId, issues]);
+    };
+    if (machineId) fetchData();
+  }, [machineId]);
   // Filter items
   const filteredItems = useMemo(() => {
     if (activeFilter === 'all') return historyItems;
     return historyItems.filter((item) => item.status === activeFilter);
   }, [historyItems, activeFilter]);
+
   // Group items by time period
   const groupedItems = useMemo(() => {
-    const groups: Record<string, HistoryItem[]> = {};
+    const groups: Record<string, any[]> = {};
     const order = ['Today', 'Yesterday', 'This Week', 'Older'];
-    filteredItems.forEach((item) => {
-      const group = getTimeGroup(item.rawDate);
+    filteredItems.forEach((item: any) => {
+      const date = new Date(item.rawDate || item.date || item.resolved_at);
+      const group = getTimeGroup(date);
       if (!groups[group]) groups[group] = [];
       groups[group].push(item);
     });
     // Return in order
     return order.
-    filter((key) => groups[key]?.length > 0).
-    map((key) => ({
-      label: key,
-      items: groups[key]
-    }));
+      filter((key) => groups[key]?.length > 0).
+      map((key) => ({
+        label: key,
+        items: groups[key]
+      }));
   }, [filteredItems]);
   // Count for filters
   const filterCounts = useMemo(
@@ -172,12 +96,12 @@ export function MachineHistory() {
       all: historyItems.length,
       working: historyItems.filter((i) => i.status === 'working').length,
       'not-working': historyItems.filter((i) => i.status === 'not-working').
-      length,
+        length,
       resolved: historyItems.filter((i) => i.status === 'resolved').length
     }),
     [historyItems]
   );
-  const handleViewMore = (item: HistoryItem) => {
+  const handleViewMore = (item: any) => {
     if (machine) {
       navigate(`/technician/inspection/${machineId}`, {
         state: {
@@ -189,15 +113,15 @@ export function MachineHistory() {
             time: item.date.split(', ')[1] || '',
             status: item.status === 'working' ? 'working' : 'broken',
             failedItems:
-            item.status !== 'working' ?
-            [
-            {
-              id: 'c-2',
-              label: 'Check high-pressure system & cylinder contents',
-              notes: 'Pressure gauge showing inconsistent readings'
-            }] :
+              item.status !== 'working' ?
+                [
+                  {
+                    id: 'c-2',
+                    label: 'Check high-pressure system & cylinder contents',
+                    notes: 'Pressure gauge showing inconsistent readings'
+                  }] :
 
-            [],
+                [],
             lifecycle: {
               checkedBy: item.checkedBy,
               resolvedBy: item.resolvedBy,
@@ -234,8 +158,12 @@ export function MachineHistory() {
 
     }
   };
+  if (loading) {
+    return <div className="p-6 text-center"><Loader className="animate-spin" /></div>;
+  }
+
   if (!machine) {
-    return <div>Machine not found</div>;
+    return <div className="p-6 text-center">Machine not found</div>;
   }
   return (
     <div
@@ -245,7 +173,7 @@ export function MachineHistory() {
         paddingBottom: 'calc(var(--safe-area-bottom) + 8rem)'
       }}>
 
-      <div className="max-w-md mx-auto px-6 pt-8">
+      <div className="max-w-md  px-6 pt-8">
         <header className="flex items-center gap-4 mb-6">
           <button
             onClick={() => navigate(-1)}
@@ -294,18 +222,18 @@ export function MachineHistory() {
         {/* Grouped History Items */}
         <AnimatePresence mode="popLayout">
           {groupedItems.length === 0 ?
-          <motion.div
-            initial={{
-              opacity: 0,
-              y: 20
-            }}
-            animate={{
-              opacity: 1,
-              y: 0
-            }}
-            className="text-center py-12">
+            <motion.div
+              initial={{
+                opacity: 0,
+                y: 20
+              }}
+              animate={{
+                opacity: 1,
+                y: 0
+              }}
+              className="text-center py-12">
 
-              <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center  mb-4">
                 <Filter className="w-8 h-8 text-slate-400" />
               </div>
               <h3 className="font-bold text-slate-800 dark:text-slate-100 mb-2">
@@ -316,8 +244,8 @@ export function MachineHistory() {
               </p>
             </motion.div> :
 
-          groupedItems.map((group, groupIndex) =>
-          <div key={group.label} className="mb-6">
+            groupedItems.map((group: any, groupIndex: number) => (
+              <div key={group.label} className="mb-6">
                 {/* Time Group Header */}
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
@@ -327,26 +255,26 @@ export function MachineHistory() {
                 </div>
 
                 <div className="space-y-3">
-                  {group.items.map((item, index) =>
-              <motion.div
-                key={item.id}
-                layout
-                initial={{
-                  y: 20,
-                  opacity: 0
-                }}
-                animate={{
-                  y: 0,
-                  opacity: 1
-                }}
-                exit={{
-                  opacity: 0,
-                  scale: 0.95
-                }}
-                transition={{
-                  delay: (groupIndex * group.items.length + index) * 0.05
-                }}
-                className={`bg-white dark:bg-slate-900 rounded-2xl p-4 shadow-sm border-2 transition-all ${item.status === 'working' ? 'border-emerald-100 dark:border-emerald-900/30' : item.status === 'not-working' ? 'border-rose-100 dark:border-rose-900/30' : 'border-blue-100 dark:border-blue-900/30'}`}>
+                  {group.items.map((item: any, index: number) => (
+                    <motion.div
+                      key={item.id}
+                      layout
+                      initial={{
+                        y: 20,
+                        opacity: 0
+                      }}
+                      animate={{
+                        y: 0,
+                        opacity: 1
+                      }}
+                      exit={{
+                        opacity: 0,
+                        scale: 0.95
+                      }}
+                      transition={{
+                        delay: (groupIndex * group.items.length + index) * 0.05
+                      }}
+                      className={`bg-white dark:bg-slate-900 rounded-2xl p-4 shadow-sm border-2 transition-all ${item.status === 'working' ? 'border-emerald-100 dark:border-emerald-900/30' : item.status === 'not-working' ? 'border-rose-100 dark:border-rose-900/30' : 'border-blue-100 dark:border-blue-900/30'}`}>
 
                       {/* Machine Name as Primary Title */}
                       <div className="flex items-start justify-between mb-3">
@@ -375,17 +303,17 @@ export function MachineHistory() {
 
                       {/* Lifecycle indicator for resolved items */}
                       {item.status === 'resolved' && item.resolvedBy &&
-                <div className="mb-3 p-2.5 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-100 dark:border-blue-900/30">
+                        <div className="mb-3 p-2.5 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-100 dark:border-blue-900/30">
                           <p className="text-xs text-blue-700 dark:text-blue-400">
                             <span className="font-semibold">
                               Fault Reported → Resolved
                             </span>
                             {item.resolvedAt &&
-                    <span className="text-blue-600 dark:text-blue-500">
+                              <span className="text-blue-600 dark:text-blue-500">
                                 {' '}
                                 • {item.resolvedAt}
                               </span>
-                    }
+                            }
                           </p>
                           <p className="text-xs text-blue-600 dark:text-blue-500 mt-0.5">
                             Resolved by:{' '}
@@ -394,23 +322,23 @@ export function MachineHistory() {
                             </span>
                           </p>
                         </div>
-                }
+                      }
 
                       {/* View More button */}
                       <div className="flex justify-end">
                         <button
-                    onClick={() => handleViewMore(item)}
-                    className="flex items-center gap-1 text-sm font-bold text-health-primary hover:text-teal-600 dark:hover:text-teal-400 transition-colors group">
+                          onClick={() => handleViewMore(item)}
+                          className="flex items-center gap-1 text-sm font-bold text-health-primary hover:text-teal-600 dark:hover:text-teal-400 transition-colors group">
 
                           View Details
                           <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
                         </button>
                       </div>
                     </motion.div>
-              )}
+                  ))}
                 </div>
               </div>
-          )
+            ))
           }
         </AnimatePresence>
       </div>

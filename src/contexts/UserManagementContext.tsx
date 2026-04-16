@@ -8,6 +8,7 @@ export interface ManagedUser {
   enabled: boolean;
   assignedOTs: string[];
   joinDate: string;
+  profile_pic?: string;
   lastLogin?: string;
 }
 interface UserManagementContextType {
@@ -17,21 +18,21 @@ interface UserManagementContextType {
   toggleUserAccess: (id: string) => void;
   assignOTs: (userId: string, otIds: string[]) => void;
   canUserLogin: (
-  email: string,
-  role: UserRole)
-  => {
-    allowed: boolean;
-    reason?: string;
-  };
+    email: string,
+    role: UserRole)
+    => {
+      allowed: boolean;
+      reason?: string;
+    };
 }
 const UserManagementContext = createContext<
   UserManagementContextType | undefined>(
-  undefined);
+    undefined);
 export function UserManagementProvider({
   children
 
 
-}: {children: React.ReactNode;}) {
+}: { children: React.ReactNode; }) {
   const [users, setUsers] = useState<ManagedUser[]>(() => {
     const saved = localStorage.getItem('managedUsers');
     if (saved) {
@@ -39,45 +40,45 @@ export function UserManagementProvider({
     }
     // Default mock users
     return [
-    {
-      id: 'user-1',
-      name: 'Alex Taylor',
-      email: 'alex.taylor@hospital.com',
-      role: 'technician' as UserRole,
-      enabled: true,
-      assignedOTs: ['OT-1', 'OT-2'],
-      joinDate: '2023-01-15',
-      lastLogin: '2024-01-28'
-    },
-    {
-      id: 'user-2',
-      name: 'David Chen',
-      email: 'david.chen@hospital.com',
-      role: 'bmet' as UserRole,
-      enabled: true,
-      assignedOTs: ['OT-1', 'OT-2', 'OT-3'],
-      joinDate: '2023-03-10',
-      lastLogin: '2024-01-27'
-    },
-    {
-      id: 'user-3',
-      name: 'Maria Garcia',
-      email: 'maria.garcia@hospital.com',
-      role: 'technician' as UserRole,
-      enabled: false,
-      assignedOTs: [],
-      joinDate: '2023-06-20'
-    },
-    {
-      id: 'user-4',
-      name: 'James Wilson',
-      email: 'james.wilson@hospital.com',
-      role: 'bmet' as UserRole,
-      enabled: true,
-      assignedOTs: ['OT-4', 'OT-5'],
-      joinDate: '2023-08-05',
-      lastLogin: '2024-01-26'
-    }];
+      {
+        id: 'user-1',
+        name: 'Alex Taylor',
+        email: 'alex.taylor@hospital.com',
+        role: 'technician' as UserRole,
+        enabled: true,
+        assignedOTs: ['OT-1', 'OT-2'],
+        joinDate: '2023-01-15',
+        lastLogin: '2024-01-28'
+      },
+      {
+        id: 'user-2',
+        name: 'David Chen',
+        email: 'david.chen@hospital.com',
+        role: 'bmet' as UserRole,
+        enabled: true,
+        assignedOTs: ['OT-1', 'OT-2', 'OT-3'],
+        joinDate: '2023-03-10',
+        lastLogin: '2024-01-27'
+      },
+      {
+        id: 'user-3',
+        name: 'Maria Garcia',
+        email: 'maria.garcia@hospital.com',
+        role: 'technician' as UserRole,
+        enabled: false,
+        assignedOTs: [],
+        joinDate: '2023-06-20'
+      },
+      {
+        id: 'user-4',
+        name: 'James Wilson',
+        email: 'james.wilson@hospital.com',
+        role: 'bmet' as UserRole,
+        enabled: true,
+        assignedOTs: ['OT-4', 'OT-5'],
+        joinDate: '2023-08-05',
+        lastLogin: '2024-01-26'
+      }];
 
   });
   useEffect(() => {
@@ -92,47 +93,47 @@ export function UserManagementProvider({
   };
   const updateUser = (id: string, updates: Partial<ManagedUser>) => {
     setUsers((prev) =>
-    prev.map((user) =>
-    user.id === id ?
-    {
-      ...user,
-      ...updates
-    } :
-    user
-    )
+      prev.map((user) =>
+        user.id === id ?
+          {
+            ...user,
+            ...updates
+          } :
+          user
+      )
     );
   };
   const toggleUserAccess = (id: string) => {
     setUsers((prev) =>
-    prev.map((user) =>
-    user.id === id ?
-    {
-      ...user,
-      enabled: !user.enabled
-    } :
-    user
-    )
+      prev.map((user) =>
+        user.id === id ?
+          {
+            ...user,
+            enabled: !user.enabled
+          } :
+          user
+      )
     );
   };
   const assignOTs = (userId: string, otIds: string[]) => {
     setUsers((prev) =>
-    prev.map((user) =>
-    user.id === userId ?
-    {
-      ...user,
-      assignedOTs: otIds
-    } :
-    user
-    )
+      prev.map((user) =>
+        user.id === userId ?
+          {
+            ...user,
+            assignedOTs: otIds
+          } :
+          user
+      )
     );
   };
   const canUserLogin = (
-  email: string,
-  role: UserRole)
-  : {
-    allowed: boolean;
-    reason?: string;
-  } => {
+    email: string,
+    role: UserRole)
+    : {
+      allowed: boolean;
+      reason?: string;
+    } => {
     const user = users.find((u) => u.email === email && u.role === role);
     if (!user) {
       return {
@@ -144,7 +145,7 @@ export function UserManagementProvider({
       return {
         allowed: false,
         reason:
-        'Your account access is restricted. Please contact Hospital Management.'
+          'Your account access is restricted. Please contact Hospital Management.'
       };
     }
     if (user.assignedOTs.length === 0) {

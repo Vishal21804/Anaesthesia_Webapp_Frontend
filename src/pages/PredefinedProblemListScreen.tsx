@@ -61,7 +61,7 @@ export function PredefinedProblemListScreen() {
   };
   return (
     <div className="min-h-screen bg-health-bg dark:bg-slate-950 pb-32 transition-colors">
-      <div className="max-w-md mx-auto px-6 pt-8">
+      <div className="max-w-md  px-6 pt-8">
         <header className="flex items-center gap-4 mb-8">
           <button
             onClick={() => navigate(-1)}
@@ -140,7 +140,7 @@ export function PredefinedProblemListScreen() {
         </motion.button>
 
         <div className="fixed bottom-0 left-0 right-0 p-6 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 z-20 transition-colors">
-          <div className="max-w-md mx-auto">
+          <div className="max-w-md ">
             <button
               onClick={() =>
               navigate(`/technician/problem-severity/${machineId}`)

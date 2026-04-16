@@ -9,8 +9,9 @@ import {
   UserCheck,
   UserX,
   Wrench,
-  MapPin } from
-'lucide-react';
+  MapPin
+} from
+  'lucide-react';
 import { motion } from 'framer-motion';
 import { useAppData } from '../contexts/AppDataContext';
 import { BottomNavigation } from '../components/BottomNavigation';
@@ -21,69 +22,69 @@ export function HMAuditTrail() {
   const [filterType, setFilterType] = useState<string>('all');
   // Mock audit entries if none exist
   const displayEntries: AuditEntry[] =
-  auditTrail.length > 0 ?
-  auditTrail :
-  [
-  {
-    id: 'audit-1',
-    timestamp: new Date(Date.now() - 3600000).toISOString(),
-    action: 'checklist_completed',
-    performedBy: 'Alex Taylor',
-    performedByRole: 'technician',
-    targetType: 'machine',
-    targetId: 'm-1',
-    targetName: 'Drager Fabius GS',
-    details: 'All 12 items passed'
-  },
-  {
-    id: 'audit-2',
-    timestamp: new Date(Date.now() - 7200000).toISOString(),
-    action: 'issue_reported',
-    performedBy: 'Alex Taylor',
-    performedByRole: 'technician',
-    targetType: 'issue',
-    targetId: 'ISS-004',
-    targetName: 'GE Datex-Ohmeda',
-    details: 'O2 sensor calibration required'
-  },
-  {
-    id: 'audit-3',
-    timestamp: new Date(Date.now() - 10800000).toISOString(),
-    action: 'issue_resolved',
-    performedBy: 'David Chen',
-    performedByRole: 'bmet',
-    targetType: 'issue',
-    targetId: 'ISS-003',
-    targetName: 'Drager Fabius GS',
-    details: 'Display replaced'
-  },
-  {
-    id: 'audit-4',
-    timestamp: new Date(Date.now() - 14400000).toISOString(),
-    action: 'user_enabled',
-    performedBy: 'Sarah Connor',
-    performedByRole: 'management',
-    targetType: 'user',
-    targetId: 'user-3',
-    targetName: 'Maria Garcia'
-  },
-  {
-    id: 'audit-5',
-    timestamp: new Date(Date.now() - 18000000).toISOString(),
-    action: 'priority_changed',
-    performedBy: 'Sarah Connor',
-    performedByRole: 'management',
-    targetType: 'machine',
-    targetId: 'm-8',
-    targetName: 'Maquet Flow-i',
-    previousValue: 'medium',
-    newValue: 'high'
-  }];
+    auditTrail.length > 0 ?
+      auditTrail :
+      [
+        {
+          id: 'audit-1',
+          timestamp: new Date(Date.now() - 3600000).toISOString(),
+          action: 'checklist_completed',
+          performedBy: 'Alex Taylor',
+          performedByRole: 'technician',
+          targetType: 'machine',
+          targetId: 'm-1',
+          targetName: 'Drager Fabius GS',
+          details: 'All 12 items passed'
+        },
+        {
+          id: 'audit-2',
+          timestamp: new Date(Date.now() - 7200000).toISOString(),
+          action: 'issue_reported',
+          performedBy: 'Alex Taylor',
+          performedByRole: 'technician',
+          targetType: 'issue',
+          targetId: 'ISS-004',
+          targetName: 'GE Datex-Ohmeda',
+          details: 'O2 sensor calibration required'
+        },
+        {
+          id: 'audit-3',
+          timestamp: new Date(Date.now() - 10800000).toISOString(),
+          action: 'issue_resolved',
+          performedBy: 'David Chen',
+          performedByRole: 'bmet',
+          targetType: 'issue',
+          targetId: 'ISS-003',
+          targetName: 'Drager Fabius GS',
+          details: 'Display replaced'
+        },
+        {
+          id: 'audit-4',
+          timestamp: new Date(Date.now() - 14400000).toISOString(),
+          action: 'user_enabled',
+          performedBy: 'Sarah Connor',
+          performedByRole: 'management',
+          targetType: 'user',
+          targetId: 'user-3',
+          targetName: 'Maria Garcia'
+        },
+        {
+          id: 'audit-5',
+          timestamp: new Date(Date.now() - 18000000).toISOString(),
+          action: 'priority_changed',
+          performedBy: 'Sarah Connor',
+          performedByRole: 'management',
+          targetType: 'machine',
+          targetId: 'm-8',
+          targetName: 'Maquet Flow-i',
+          previousValue: 'medium',
+          newValue: 'high'
+        }];
 
   const filteredEntries =
-  filterType === 'all' ?
-  displayEntries :
-  displayEntries.filter((e) => e.action.includes(filterType));
+    filterType === 'all' ?
+      displayEntries :
+      displayEntries.filter((e) => e.action.includes(filterType));
   const getActionIcon = (action: string) => {
     switch (action) {
       case 'checklist_completed':
@@ -106,10 +107,9 @@ export function HMAuditTrail() {
   };
   const getActionColor = (action: string) => {
     if (
-    action.includes('completed') ||
-    action.includes('resolved') ||
-    action.includes('enabled'))
-    {
+      action.includes('completed') ||
+      action.includes('resolved') ||
+      action.includes('enabled')) {
       return 'emerald';
     }
     if (action.includes('reported') || action.includes('disabled')) {
@@ -119,9 +119,9 @@ export function HMAuditTrail() {
   };
   const getActionLabel = (action: string) => {
     return action.
-    split('_').
-    map((w) => w.charAt(0).toUpperCase() + w.slice(1)).
-    join(' ');
+      split('_').
+      map((w) => w.charAt(0).toUpperCase() + w.slice(1)).
+      join(' ');
   };
   const formatTime = (timestamp: string) => {
     const date = new Date(timestamp);
@@ -137,7 +137,7 @@ export function HMAuditTrail() {
   };
   return (
     <div
-      className="min-h-[917px] bg-slate-50 dark:bg-slate-950 transition-colors"
+      className="min-h-[917px] bg-slate-50 dark:bg-slate-950 transition-colors text-left"
       style={{
         paddingTop: 'var(--safe-area-top)',
         paddingBottom: 'calc(var(--safe-area-bottom) + 8rem)'
@@ -147,7 +147,7 @@ export function HMAuditTrail() {
       <div className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-5 py-4">
         <div className="flex items-center gap-3 mb-4">
           <button
-            onClick={() => navigate('/management/dashboard')}
+            onClick={() => navigate('/hm-dashboard')}
             className="w-10 h-10 bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center text-slate-600 dark:text-slate-300">
 
             <ArrowLeft className="w-5 h-5" />
@@ -168,10 +168,10 @@ export function HMAuditTrail() {
         {/* Filter */}
         <div className="flex gap-2 overflow-x-auto pb-1">
           {['all', 'checklist', 'issue', 'user', 'machine'].map((type) =>
-          <button
-            key={type}
-            onClick={() => setFilterType(type)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-colors ${filterType === type ? 'bg-purple-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'}`}>
+            <button
+              key={type}
+              onClick={() => setFilterType(type)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-colors ${filterType === type ? 'bg-purple-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'}`}>
 
               {type.charAt(0).toUpperCase() + type.slice(1)}
             </button>
@@ -234,13 +234,13 @@ export function HMAuditTrail() {
                     </div>
 
                     {entry.details &&
-                    <p className="text-xs text-slate-600 dark:text-slate-400 mb-2">
+                      <p className="text-xs text-slate-600 dark:text-slate-400 mb-2">
                         {entry.details}
                       </p>
                     }
 
                     {entry.previousValue && entry.newValue &&
-                    <div className="flex items-center gap-2 text-xs">
+                      <div className="flex items-center gap-2 text-xs">
                         <span className="text-slate-400 line-through">
                           {entry.previousValue}
                         </span>

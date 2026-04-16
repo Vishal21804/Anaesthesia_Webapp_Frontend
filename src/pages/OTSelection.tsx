@@ -1,8 +1,8 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Activity, Loader, AlertCircle } from 'lucide-react';
+import { Search, Activity, Loader, AlertCircle, ArrowLeft } from 'lucide-react';
 import { BottomNavigation } from '../components/BottomNavigation';
-import { getOtList } from '../services/ot';
+import { getAssignedOTs } from '../services/ot';
 import { OT } from '../types';
 import { motion } from 'framer-motion';
 
@@ -26,20 +26,22 @@ export function OTSelection() {
     const fetchOts = async () => {
       try {
         setLoading(true);
-        const data = await getOtList();
-        setOts(data);
+        const user = JSON.parse(localStorage.getItem("user") || "{}");
+        const response = await getAssignedOTs(user.id, user.id);
+        const otList = response?.data || [];
+
+        setOts(otList);
       } catch (err) {
         setError('Failed to fetch assigned OTs. Please try again.');
       } finally {
         setLoading(false);
       }
     };
-
     fetchOts();
   }, []);
 
   const filteredOTs = useMemo(() => {
-    let data = ots;
+    let data = Array.isArray(ots) ? ots : [];
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       data = data.filter(
@@ -60,11 +62,18 @@ export function OTSelection() {
       }}>
 
       <div className="w-full px-5 pt-8">
+        <div className="flex items-center gap-3 mb-4">
+          <button
+            onClick={() => navigate(-1)}
+            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 text-slate-500 transition-colors"
+          >
+            <ArrowLeft size={20} />
+          </button>
+          <h1 className="text-xl font-semibold text-slate-800 dark:text-slate-100">Select OT</h1>
+        </div>
+
         {/* Header Section */}
         <header className="mb-6">
-          <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-1">
-            Assigned OTs
-          </h1>
           <p className="text-sm text-slate-500 dark:text-slate-400">
             Select location for safety check
           </p>
@@ -114,7 +123,7 @@ export function OTSelection() {
                 <div className="absolute top-0 right-0 w-20 h-20 bg-health-secondary dark:bg-slate-700/30 rounded-full -mr-6 -mt-6" />
 
                 <div className="relative z-10 flex items-center gap-4">
-                  {/* Teal icon container */}
+                  {/* Teal icon  */}
                   <div className="w-12 h-12 bg-health-primary dark:bg-teal-600 rounded-xl flex items-center justify-center flex-shrink-0">
                     <Activity className="w-6 h-6 text-white" />
                   </div>
@@ -125,7 +134,7 @@ export function OTSelection() {
                       {ot.ot_name}
                     </h3>
                     <p className="text-sm text-health-primary dark:text-teal-400">
-                      {ot.machines_assigned} Machines Assigned
+                      {ot.machine_count || 0} Machines
                     </p>
                   </div>
 

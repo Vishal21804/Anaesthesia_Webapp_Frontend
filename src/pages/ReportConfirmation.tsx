@@ -49,7 +49,7 @@ export function ReportConfirmation() {
         transition={{
           delay: 0.2
         }}
-        className="text-slate-500 mb-8 max-w-xs mx-auto">
+        className="text-slate-500 mb-8 max-w-xs ">
 
         Issue ID #ISS-042 has been created and the BMET team has been notified.
       </motion.p>

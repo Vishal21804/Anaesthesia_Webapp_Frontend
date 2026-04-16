@@ -14,7 +14,7 @@ export function SettingsScreen() {
         paddingBottom: 'var(--safe-area-bottom)'
       }}>
 
-      <div className="max-w-md mx-auto px-6 pt-8">
+      <div className="max-w-md  px-6 pt-8">
         <header className="flex items-center gap-4 mb-8">
           <button
             onClick={() => navigate(-1)}

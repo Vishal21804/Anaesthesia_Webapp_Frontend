@@ -1,7 +1,7 @@
 import api from './api';
 
 export const registerHM = async (data: any) => {
-    const response = await api.post('/register_hm', data);
+    const response = await api.post('/api/register', data);
     return response.data;
 };
 
@@ -12,8 +12,8 @@ export const createUser = async (data: any, creatorId: number) => {
     return response.data;
 };
 
-export const getUsers = async (creatorId: number, search?: string, role?: string) => {
-    const response = await api.get('/get_users', {
+export const getUsers = async (creatorId?: number, search?: string, role?: string) => {
+    const response = await api.get('/api/users', {
         params: { creator_id: creatorId, search, role }
     });
     return response.data;
@@ -27,7 +27,9 @@ export const updateUserStatus = async (user_id: number, status: number, creatorI
 };
 
 export const getUserProfile = async (userId: number) => {
-    const response = await api.get(`/profile/${userId}`);
+    const response = await api.get('/api/users/profile', {
+        params: { user_id: userId }
+    });
     return response.data;
 };
 

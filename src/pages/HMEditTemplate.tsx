@@ -50,13 +50,13 @@ export function HMEditTemplate() {
   };
   return (
     <div
-      className="min-h-screen bg-health-bg dark:bg-slate-950 transition-colors overflow-y-auto"
+      className="min-h-screen bg-health-bg dark:bg-slate-950 transition-colors overflow-y-auto text-left"
       style={{
         paddingTop: 'var(--safe-area-top)',
         paddingBottom: 'calc(var(--safe-area-bottom) + 8rem)'
       }}>
 
-      <div className="max-w-md mx-auto px-6 pt-8">
+      <div className="max-w-md  px-6 pt-8">
         <header className="flex items-center gap-4 mb-8">
           <button
             onClick={() => navigate(-1)}
@@ -133,7 +133,7 @@ export function HMEditTemplate() {
 
         {/* Fixed Save Button */}
         <div className="fixed bottom-24 left-0 right-0 p-6 bg-gradient-to-t from-health-bg via-health-bg to-transparent dark:from-slate-950 dark:via-slate-950 z-10">
-          <div className="max-w-md mx-auto">
+          <div className="max-w-md ">
             <button
               onClick={handleSave}
               disabled={loading}

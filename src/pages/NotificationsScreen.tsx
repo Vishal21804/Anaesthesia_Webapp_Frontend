@@ -59,7 +59,7 @@ export function NotificationsScreen() {
   };
   return (
     <div className="min-h-screen bg-health-bg dark:bg-slate-950 pb-32 transition-colors">
-      <div className="max-w-md mx-auto px-6 pt-8">
+      <div className="max-w-md  px-6 pt-8">
         <header className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
             <button

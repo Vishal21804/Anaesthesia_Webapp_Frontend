@@ -47,7 +47,7 @@ export function OTMismatchReport() {
     return (
       <div className="min-h-screen bg-health-bg dark:bg-slate-950 flex items-center justify-center p-6">
         <div className="text-center">
-          <AlertTriangle className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+          <AlertTriangle className="w-12 h-12 text-slate-400  mb-4" />
           <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">
             Machine Not Found
           </h2>
@@ -205,7 +205,7 @@ export function OTMismatchReport() {
         paddingBottom: 'calc(var(--safe-area-bottom) + 2rem)'
       }}>
 
-      <div className="max-w-md mx-auto px-6 pt-8 pb-8">
+      <div className="max-w-md  px-6 pt-8 pb-8">
         {/* Header */}
         <header className="flex items-center gap-4 mb-6">
           <button

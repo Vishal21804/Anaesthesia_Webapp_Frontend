@@ -32,7 +32,7 @@ export function MachineStatus() {
 
   return (
     <div className="min-h-screen bg-health-bg flex flex-col justify-center p-6">
-      <div className="max-w-md mx-auto w-full">
+      <div className="max-w-md  w-full">
         <motion.div
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}

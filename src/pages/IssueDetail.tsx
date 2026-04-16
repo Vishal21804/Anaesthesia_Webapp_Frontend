@@ -1,19 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   ArrowLeft,
   Clock,
   MapPin,
-  User,
   Wrench,
-  MessageSquare,
   CheckCircle2,
   Loader
 } from 'lucide-react';
 import { StatusBadge } from '../components/StatusBadge';
-import { SeverityBadge } from '../components/SeverityBadge';
 import { BottomNavigation } from '../components/BottomNavigation';
-import { getIssueDetails, updateIssue } from '../services/issues';
+import api from '../services/api';
 import { Issue } from '../types';
 import { motion } from 'framer-motion';
 
@@ -34,9 +31,20 @@ export function IssueDetail() {
       }
       try {
         setLoading(true);
-        const data = await getIssueDetails(parseInt(id));
-        setIssue(data);
-      } catch (err) {
+        const user = JSON.parse(localStorage.getItem("user") || "{}");
+        console.log("URL TEST:", user.id);
+
+        const res = await api.get(`/api/issues/${id}`, {
+          params: { creator_id: user.id }
+        });
+
+        if (res.data.status) {
+          setIssue(res.data.data);
+        } else {
+          setError(res.data.message || "Failed to fetch issue details.");
+        }
+      } catch (err: any) {
+        console.error("Fetch error:", err.response || err);
         setError("Failed to fetch issue details.");
       } finally {
         setLoading(false);
@@ -48,16 +56,27 @@ export function IssueDetail() {
   const handleUpdateStatus = async (status: 'in-progress' | 'resolved') => {
     if (!issue) return;
     try {
-        await updateIssue(issue.id, status, bmetNotes);
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
+      const res = await api.put(`/api/issues/${issue.id}/status`, {
+        status: status,
+        notes: bmetNotes
+      }, {
+        params: { creator_id: user.id }
+      });
+
+      if (res.data.status) {
         if (status === 'resolved') {
-            navigate('/bmet/confirmation');
+          navigate('/bmet-dashboard');
         } else {
-            // Refetch issue details to show updated status
-            const data = await getIssueDetails(issue.id);
-            setIssue(data);
+          // Refetch
+          const detailRes = await api.get(`/api/issues/${issue.id}`, {
+            params: { creator_id: user.id }
+          });
+          setIssue(detailRes.data.data);
         }
+      }
     } catch (error) {
-        alert(`Failed to update issue status.`);
+      alert(`Failed to update issue status.`);
     }
   };
 
@@ -77,7 +96,7 @@ export function IssueDetail() {
         paddingBottom: 'calc(var(--safe-area-bottom) + 8rem)'
       }}>
 
-      <div className="max-w-md mx-auto px-5 pt-6">
+      <div className="max-w-md  px-5 pt-6">
         <header className="flex items-center gap-4 mb-6">
           <button
             onClick={() => navigate(-1)}
@@ -175,7 +194,7 @@ export function IssueDetail() {
           )}
           {issue.status === 'resolved' && (
             <div className="bg-emerald-50 dark:bg-emerald-950/30 rounded-xl p-4 text-center">
-              <CheckCircle2 className="w-8 h-8 text-emerald-600 dark:text-emerald-400 mx-auto mb-2" />
+              <CheckCircle2 className="w-8 h-8 text-emerald-600 dark:text-emerald-400  mb-2" />
               <p className="font-bold text-emerald-700 dark:text-emerald-400">
                 Issue Resolved
               </p>

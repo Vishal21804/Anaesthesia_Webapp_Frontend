@@ -16,7 +16,7 @@ export function HMUserOTAssignment() {
   );
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center text-left">
         <p className="text-slate-500">User not found</p>
       </div>);
 

@@ -18,7 +18,7 @@ export function BMETCloseIssueConfirmation() {
   };
   return (
     <div className="min-h-screen bg-health-bg dark:bg-slate-950 flex flex-col justify-center p-6 transition-colors">
-      <div className="max-w-md mx-auto w-full">
+      <div className="max-w-md  w-full">
         <button
           onClick={() => navigate(-1)}
           className="absolute top-6 left-6 p-2 bg-white dark:bg-slate-900 rounded-full shadow-sm text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
@@ -40,7 +40,7 @@ export function BMETCloseIssueConfirmation() {
           }}
           className="text-center mb-8">
 
-          <div className="w-20 h-20 bg-emerald-100 dark:bg-emerald-950/30 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-emerald-200/50 dark:shadow-none">
+          <div className="w-20 h-20 bg-emerald-100 dark:bg-emerald-950/30 rounded-full flex items-center justify-center  mb-6 shadow-lg shadow-emerald-200/50 dark:shadow-none">
             <CheckCircle className="w-10 h-10 text-emerald-600 dark:text-emerald-500" />
           </div>
           <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-2">

@@ -21,7 +21,7 @@ export function IssueFilterSearchScreen() {
   };
   return (
     <div className="min-h-screen bg-health-bg dark:bg-slate-950 pb-32 transition-colors">
-      <div className="max-w-md mx-auto px-6 pt-8">
+      <div className="max-w-md  px-6 pt-8">
         <header className="flex items-center gap-4 mb-8">
           <button
             onClick={() => navigate(-1)}
@@ -98,7 +98,7 @@ export function IssueFilterSearchScreen() {
         </div>
 
         <div className="fixed bottom-0 left-0 right-0 p-6 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 z-20 transition-colors">
-          <div className="max-w-md mx-auto">
+          <div className="max-w-md ">
             <button
               onClick={() => navigate('/bmet/issues')}
               className="w-full bg-health-primary text-white font-bold py-4 rounded-xl shadow-lg shadow-health-primary/30 hover:bg-teal-600 transition-all active:scale-95">
