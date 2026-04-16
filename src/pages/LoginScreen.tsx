@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
+import { API_BASE_URL } from "../constants"
 import { Eye, EyeOff, Lock, Mail } from "lucide-react"
 import "./LoginScreen.css"
 
@@ -18,7 +19,7 @@ export default function LoginScreen() {
     try {
 
       const res = await axios.post(
-        "http://127.0.0.1:8000/login",
+        `${API_BASE_URL}/login`,
         {
           email,
           password

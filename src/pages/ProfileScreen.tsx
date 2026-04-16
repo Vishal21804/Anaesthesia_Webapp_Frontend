@@ -11,6 +11,7 @@ import {
 import { BottomNavigation } from '../components/BottomNavigation';
 import { motion } from 'framer-motion';
 import api from '../services/api';
+import { API_BASE_URL } from '../constants';
 export function ProfileScreen() {
   const navigate = useNavigate();
   const [profile, setProfile] = useState<any>(null);
@@ -74,7 +75,7 @@ export function ProfileScreen() {
   });
 
   const profileImageUrl = profile?.profile_pic
-    ? (profile.profile_pic.startsWith('http') ? profile.profile_pic : `http://127.0.0.1:8000/${profile.profile_pic}`)
+    ? (profile.profile_pic.startsWith('http') ? profile.profile_pic : `${API_BASE_URL}/${profile.profile_pic}`)
     : null;
 
   const mapRole = (backendRole: string) => {

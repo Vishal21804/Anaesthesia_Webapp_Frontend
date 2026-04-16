@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { API_BASE_URL } from '../constants';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, MapPin, CheckCircle2, Loader } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -22,7 +23,7 @@ export default function HMTechnicianOTAssign() {
     try {
       const creatorId = localStorage.getItem("user_id") || JSON.parse(localStorage.getItem("user") || "{}").id;
       const res = await fetch(
-        `http://127.0.0.1:8000/api/ot/user_assignments?creator_id=${creatorId}&user_id=${userId}`
+        `${API_BASE_URL}/api/ot/user_assignments?creator_id=${creatorId}&user_id=${userId}`
       );
       const json = await res.json();
       if (json.status) {
@@ -40,7 +41,7 @@ export default function HMTechnicianOTAssign() {
     try {
       const creatorId = localStorage.getItem("user_id") || JSON.parse(localStorage.getItem("user") || "{}").id;
       const res = await fetch(
-        `http://127.0.0.1:8000/api/ot/available?creator_id=${creatorId}&user_role=${role}`
+        `${API_BASE_URL}/api/ot/available?creator_id=${creatorId}&user_role=${role}`
       );
       const json = await res.json();
       if (json.status) {
@@ -57,7 +58,7 @@ export default function HMTechnicianOTAssign() {
   const fetchTechnician = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`http://127.0.0.1:8000/profile/${techId}`);
+      const res = await fetch(`${API_BASE_URL}/profile/${techId}`);
       const json = await res.json();
       if (json.status) {
         const user = json.data;
@@ -82,7 +83,7 @@ export default function HMTechnicianOTAssign() {
   const handleAssign = async (otId: number) => {
     try {
       const creatorId = localStorage.getItem("user_id") || JSON.parse(localStorage.getItem("user") || "{}").id;
-      const res = await fetch(`http://127.0.0.1:8000/api/ot/assign?creator_id=${creatorId}`, {
+      const res = await fetch(`${API_BASE_URL}/api/ot/assign?creator_id=${creatorId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ user_id: techId, ot_id: otId })
@@ -101,7 +102,7 @@ export default function HMTechnicianOTAssign() {
     try {
       const creatorId = localStorage.getItem("user_id") || JSON.parse(localStorage.getItem("user") || "{}").id;
       const res = await fetch(
-        `http://127.0.0.1:8000/api/ot/unassign?creator_id=${creatorId}&user_id=${techId}&ot_id=${otId}`,
+        `${API_BASE_URL}/api/ot/unassign?creator_id=${creatorId}&user_id=${techId}&ot_id=${otId}`,
         { method: 'DELETE' }
       );
       const json = await res.json();
@@ -161,7 +162,7 @@ export default function HMTechnicianOTAssign() {
         <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center text-purple-600 dark:text-purple-400 font-bold overflow-hidden">
           {technician.profile_picture ? (
             <img
-              src={`http://127.0.0.1:8000/${technician.profile_picture}?t=${Date.now()}`}
+              src={`${API_BASE_URL}/${technician.profile_picture}?t=${Date.now()}`}
               alt={technician.name}
               className="w-full h-full object-cover"
             />

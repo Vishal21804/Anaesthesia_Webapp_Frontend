@@ -1,5 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { API_BASE_URL } from '../constants';
 import {
     ArrowLeft,
     Loader,
@@ -215,7 +216,7 @@ export function HMUserAccessControl() {
                         <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0 bg-slate-100 dark:bg-slate-800 ring-2 ring-slate-50 dark:ring-slate-800 shadow-sm">
                             {user?.profile_pic ? (
                                 <img
-                                    src={user.profile_pic.startsWith('http') ? user.profile_pic : `http://127.0.0.1:8000/${user.profile_pic}`}
+                                    src={user.profile_pic.startsWith('http') ? user.profile_pic : `${API_BASE_URL}/${user.profile_pic}`}
                                     alt={user.name}
                                     className="w-full h-full object-cover"
                                     onError={(e) => {

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { API_BASE_URL } from '../constants';
 import { useNavigate } from 'react-router-dom';
 import {
     User,
@@ -82,7 +83,7 @@ export const HMProfile = () => {
     });
 
     const profileImageUrl = profile?.profile_pic
-        ? (profile.profile_pic.startsWith('http') ? profile.profile_pic : `http://127.0.0.1:8000/${profile.profile_pic}`)
+        ? (profile.profile_pic.startsWith('http') ? profile.profile_pic : `${API_BASE_URL}/${profile.profile_pic}`)
         : null;
 
     return (

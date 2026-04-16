@@ -10,7 +10,8 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { BottomNavigation } from '../components/BottomNavigation';
 
-const API_BASE = "http://127.0.0.1:8000";
+import { API_BASE_URL } from "../constants";
+const API_BASE = API_BASE_URL;
 
 const getProfileImage = (path: string | null) => {
   if (!path) return null;

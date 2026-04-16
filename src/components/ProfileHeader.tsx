@@ -1,4 +1,5 @@
 import React from 'react';
+import { API_BASE_URL } from '../constants';
 import { Bell, User } from 'lucide-react';
 import { RoleBadge } from './RoleBadge';
 import { UserRole } from '../types';
@@ -28,7 +29,7 @@ export function ProfileHeader({
 }: ProfileHeaderProps) {
   const getAvatarUrl = () => {
     if (profilePic) {
-      return profilePic.startsWith('http') ? profilePic : `http://127.0.0.1:8000/${profilePic}`;
+      return profilePic.startsWith('http') ? profilePic : `${API_BASE_URL}/${profilePic}`;
     }
     return null;
   };

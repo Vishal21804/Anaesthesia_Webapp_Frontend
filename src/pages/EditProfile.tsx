@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { API_BASE_URL } from '../constants';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Phone, Camera, Save, Loader2, Upload, User, Mail, Calendar } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -40,7 +41,7 @@ export function EditProfile() {
                         dob: data.dob || ""
                     });
                     if (data.profile_pic) {
-                        setPreview(data.profile_pic.startsWith('http') ? data.profile_pic : `http://127.0.0.1:8000/${data.profile_pic}?t=${Date.now()}`);
+                        setPreview(data.profile_pic.startsWith('http') ? data.profile_pic : `${API_BASE_URL}/${data.profile_pic}?t=${Date.now()}`);
                     }
                     // Sync local storage
                     const updatedUser = { ...user, mobile: data.mobile, profile_pic: data.profile_pic };

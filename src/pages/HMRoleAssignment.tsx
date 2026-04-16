@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { API_BASE_URL } from '../constants';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Shield, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -122,7 +123,7 @@ export function HMRoleAssignment() {
           className="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-100 dark:border-slate-800 shadow-sm mb-6 flex items-center gap-4">
 
           <img
-            src={user.avatar.startsWith('http') ? user.avatar : `http://127.0.0.1:8000/${user.avatar}`}
+            src={user.avatar.startsWith('http') ? user.avatar : `${API_BASE_URL}/${user.avatar}`}
             alt={user.name}
             className="w-14 h-14 rounded-full object-cover border-2 border-slate-100 dark:border-slate-700" />
 
